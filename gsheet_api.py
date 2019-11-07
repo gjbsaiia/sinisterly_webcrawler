@@ -25,13 +25,13 @@ def readSheet(creds, sheet, subsheet, columns):
 	entry = []
 	goog = gspread.authorize(creds)
 	sheet = goog.open(sheet).worksheet(subsheet)
-	i = 1
-	j = 0
+	i = 2
+	j = 1
 	while(sheet.cell(i,j).value != ""):
-		while(j < columns):
+		while(j <= columns):
 			entry.append(sheet.cell(i,j).value)
 			j += 1
-		j = 0
+		j = 1
 		list.append(entry)
 		entry = []
 		i += 1
