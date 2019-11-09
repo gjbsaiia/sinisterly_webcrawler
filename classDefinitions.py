@@ -7,6 +7,7 @@
 
 class Session:
 	def __init__(self):
+		self.driver = None
 		self.user_manifest = {}
 		self.gsheet_creds = ""
 		self.gsheet = "Sinister.ly Market Data"
@@ -23,8 +24,6 @@ class Session:
 		for key,value in self.user_manifest.items():
 			list.append(value.dump())
 		return list
-
-
 
 class User: # object the encloses all your data
 	def __init__(self, name, threads=0, replies=0, score=0, rating=0):

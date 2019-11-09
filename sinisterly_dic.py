@@ -7,6 +7,20 @@
 
 market_url = "https://sinister.ly/Forum-Regular-Sales"
 
-xpathDic = { # xPaths to various locations on the sinister.ly website
 # Here we have to map each xpath to a specific attribute we want to track
+xpathDic = {
+# thread index starts at 6
+"th_title1": '/html/body/div[3]/div[2]/table/tbody/tr[',
+"th_title2": ']/td[3]/div/span/span/a',
+"th_user1": '/html/body/div[3]/div[2]/table/tbody/tr[',
+"th_user2": ']/td[3]/div/span/div/a/span',
+"th_replies1": '/html/body/div[3]/div[2]/table/tbody/tr[',
+"th_replies2": ']/td[5]/a',
+"th_views1": '/html/body/div[3]/div[2]/table/tbody/tr[',
+"th_views2": ']/td[6]',
+"th_rating1": '/html/body/div[3]/div[2]/table/tbody/tr[',
+"th_rating2": ']/td[4]/div/ul/li[1]',
+"th_time1": '/html/body/div[3]/div[2]/table/tbody/tr[',
+"th_time2": ']/td[7]/span/span'
+
 }

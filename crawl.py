@@ -10,7 +10,7 @@ import gsheet_api as g
 import classDefinitions as c
 
 def main():
-    sesh = c.Session()
+    sesh = web.start()
     creds = g.configCreds("creds.json")
     sesh.gsheet_creds = creds
 
