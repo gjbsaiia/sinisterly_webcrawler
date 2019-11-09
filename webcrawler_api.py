@@ -20,6 +20,7 @@ from datetime import date
 
 # My Libraries
 from classDefinitions import Session
+from classDefinitions import Thread
 from sinisterly_dic import market_url
 from sinisterly_dic import xpathDic
 
@@ -40,10 +41,11 @@ def stripThread(driver, i):
 	key = ""
 	path = ""
 	th = str(i)
+	thread = Thread()
 	try:
 		key = "th_title"
 		path = xpathDic["th_title1"]+th+xpathDic["th_title2"]
-		data.append(getTextFrom(driver, path))
+		thread.set(getTextFrom(driver, path))
 		key = "th_user"
 		path = xpathDic["th_user1"]+th+xpathDic["th_user2"]
 		data.append(getTextFrom(driver, path))

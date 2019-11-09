@@ -17,7 +17,11 @@ def main():
     creds = g.configCreds("creds.json")
     sesh.gsheet_creds = creds
     data = web.stripThread(sesh.driver, 6)
-    print(data)
+
+def startCrawl():
+    
+
+
 
 def populateFlags(sesh):
     list = g.readSheet(sesh.gsheet_creds, sesh.gsheet, sesh.flag_sheet, 1)
@@ -45,7 +49,7 @@ def checkContent(sesh, content):
     return False
 
 def addThread(sesh, thread):
-    g.writeData(sesh.gsheet_creds, sesh.gsheet, sesh.market_sheet, thread.dump().append(checkContent(sesh, thread.content)))
+    g.writeData(sesh.gsheet_creds, sesh.gsheet, sesh.market_sheet, thread.dump())
     if(checkNewUser(thread.user)):
         newUser = c.User(name=thread.user, threads=1, score=thread.threadRating, rating=thread.threadRating)
         sesh.addToManifest(newUser)

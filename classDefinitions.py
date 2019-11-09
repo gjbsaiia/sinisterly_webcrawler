@@ -45,12 +45,12 @@ class User: # object the encloses all your data
 		return [self.name, self.threadCount, self.replyCount, self.totalScore, self.aveRating]
 
 class Thread: # object to enclose all data concerning one thread
-	def __init__(self, me, url="", rating="", replies=[], numRep = 0, views = 0, content = "", date = ""):
+	def __init__(self, me="", name="", url="", rating="", replies=[], numRep = 0, views = 0, content = "", date = ""):
 		self.base_url = "https://sinister.ly/Thread-"
 		self.user = me # profile this post belongs to
-		self.threadUrl = "" # thread url
-		self.threadName = "" # name of thread
-		self.setURL(url)
+		self.threadUrl = url # thread url
+		self.threadName = name # name of thread
+		self.url = url
 		self.threadRating = rating # Out of 5 stars
 		self.replies = replies # usernames for all users who have replied on thread
 		self.numReplies = numRep # number of replies
@@ -58,9 +58,7 @@ class Thread: # object to enclose all data concerning one thread
 		self.content = content # content of original post
 		self.date = date # date post was posted
 	def setURL(self, url):
-		if(url):
-			self.threadUrl = url
-			self.threadName = self.threadURL.split(self.base_url)[1]
+		self.threadUrl = url
 	def setRating(self, rating):
 		self.threadRating = rating
 	def addReplier(self, replier):
