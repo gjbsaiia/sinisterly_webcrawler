@@ -4,7 +4,10 @@
 # Computer Security
 # Underground Market Research
 # github: https://github.com/gjbsaiia
+import os
+import sys
 
+# My Libraries
 import webcrawler_api as web
 import gsheet_api as g
 import classDefinitions as c
@@ -13,6 +16,8 @@ def main():
     sesh = web.start()
     creds = g.configCreds("creds.json")
     sesh.gsheet_creds = creds
+    data = web.stripThread(sesh.driver, 6)
+    print(data)
 
 def populateFlags(sesh):
     list = g.readSheet(sesh.gsheet_creds, sesh.gsheet, sesh.flag_sheet, 1)

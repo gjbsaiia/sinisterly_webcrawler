@@ -29,7 +29,7 @@ def readSheet(creds, sheet, subsheet, columns):
 	j = 1
 	while(sheet.cell(i,j).value != ""):
 		while(j <= columns):
-			entry.append(sheet.cell(i,j).value)
+			entry.append((sheet.cell(i,j).value).encode("utf-8"))
 			j += 1
 		j = 1
 		list.append(entry)
