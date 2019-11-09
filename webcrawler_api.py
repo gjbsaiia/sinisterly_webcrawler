@@ -58,13 +58,16 @@ def stripThread(driver, i):
 			key = "th_views"
 			path = xpathDic["th_views1"]+th+xpathDic["th_views2"]
 			thread.setNumViews(getViewElement(driver, path))
+			key = "th_rating"
+			path = xpathDic["th_rating1"]+th+xpathDic["th_rating2"]
+			thread.setRating(getRating(driver, path))
 			# inside thread
 			path = xpathDic["th_title1"]+th+xpathDic["th_title2"]
 			getElementFrom(driver, path).click()
 			key = "url"
 			thread.setURL((driver.current_url).encode("utf-8"))
 			key = "th_content"
-			thread.setContent(getTextFrom(driver, xpathDic["th_content"]))
+			thread.setContent(getContent(driver, xpathDic["th_content"]))
 		except selenium.common.exceptions.NoSuchElementException:
 			print("Failed on "+key+" with "+path+", on thread num "+th+"\n")
 		driver.get(market_url)
@@ -78,6 +81,34 @@ def checkExists(driver, path):
 		return True
 	except selenium.common.exceptions.NoSuchElementException:
 		return False
+
+def getContent(driver, path):
+	text = getTextFrom(driver, path)
+	return "/n ".join(text.split("\n"))
+
+def get_text_excluding_children(driver, element):
+	return driver.execute_script("""
+	var parent = arguments[0];
+	var child = parent.firstChild;
+	var ret = "";
+	while(child) {
+	    if (child.nodeType === Node.TEXT_NODE)
+	        ret += child.textContent;
+	    child = child.nextSibling;
+	}
+	return ret;
+	""", element)
+
+def getRating(driver, path):
+	elem = getElementFrom(driver, path)
+	text = get_text_excluding_children(driver, elem)
+	split = text.split(" - ")
+	try:
+		if(int(split[0].split(" ")[0]) > 0):
+			return split[1].split(" ")[0]
+	except ValueError:
+		print("Path: "+path+", value: "+split[0].split(" ")[0]+"\n")
+	return ""
 
 def getTimeStamp(driver, xpath):
 	elem = getElementFrom(driver, xpath)

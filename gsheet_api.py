@@ -56,6 +56,6 @@ def writeData(creds, sheet, subsheet, data, overwrite=False):
 		for datum in each:
 			sheet.update_cell(i, j, datum)
 			j+=1
-		j = 0
+		j = 1
 		i += 1
 	return True

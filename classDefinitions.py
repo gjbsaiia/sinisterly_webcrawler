@@ -26,26 +26,30 @@ class Session:
 		return list
 
 class User: # object the encloses all your data
-	def __init__(self, name, threads=0, replies=0, score=0, rating=0):
+	def __init__(self, name, threads=0, scored=0, replies=0, score=0, rating=0):
 		self.name = name # API Key to optional Google Sheet functionality
 		self.base_url = "https://sinister.ly/User-"
 		self.profile_url = self.base_url+name
 		self.threadCount = threads
+		self.scoredThread = scored
 		self.replyCount = replies
 		self.totalScore = score
 		self.aveRating = rating
 	def addThread(self):
 		self.threadCount += 1
+	def addScored(self):
+		self.threadCount += 1
+		self.scoredThread += 1
 	def addReply(self):
 		self.replyCount += 1
 	def updateAveRating(self, rating):
 		self.totalScore += int(rating)
-		self.aveRating = self.totalScore / self.threadCount
+		self.aveRating = self.totalScore / self.scoredThread
 	def dump(self):
-		return [self.name, self.threadCount, self.replyCount, self.totalScore, self.aveRating]
+		return [self.name, self.threadCount, self.scoredThread, self.replyCount, self.totalScore, self.aveRating]
 
 class Thread: # object to enclose all data concerning one thread
-	def __init__(self, me="", name="", url="", rating="", replies=[], numRep = 0, views = 0, content = "", date = ""):
+	def __init__(self, me="", name="", url="", rating="", replies=[], numRep = 0, views = 0, content = "", date = "", flag=False):
 		self.base_url = "https://sinister.ly/Thread-"
 		self.user = me # profile this post belongs to
 		self.threadName = name # name of thread
@@ -56,6 +60,7 @@ class Thread: # object to enclose all data concerning one thread
 		self.views = views # number of thread views
 		self.content = content # content of original post
 		self.date = date # date post was posted
+		self.flag = flag
 	def setUser(self, user):
 		self.user = user
 	def setName(self, name):
@@ -74,5 +79,7 @@ class Thread: # object to enclose all data concerning one thread
 		self.date = string
 	def setContent(self, string):
 		self.content = string
+	def setFlag(self, flag):
+		self.flag = flag
 	def dump(self):
-		return [self.threadName, self.threadUrl, thread.user, thread.date, thread.numReplies, thread.views, thread.content]
+		return [self.threadName, self.user, self.date, self.numReplies, self.views, self.threadRating, self.threadUrl, self.content, self.flag]

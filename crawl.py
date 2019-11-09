@@ -16,15 +16,21 @@ def main():
     sesh = web.start()
     creds = g.configCreds("creds.json")
     sesh.gsheet_creds = creds
+    # i = 6 # hardcoded because thread indexing starts here
+    # thread = web.stripThread(sesh.driver, i)
+    # thread.setFlag(checkContent(sesh, thread.content))
+    # print(thread.dump())
     startCrawl(sesh)
+    updateManifest(sesh)
 
-def startCrawl(sesh):
+def startCrawl(sesh, end=1000):
     i = 6 # hardcoded because thread indexing starts here
-    thread = stripThread(sesh.driver, i)
-    while(thread):
-        addThread(thread, sesh)
+    thread = web.stripThread(sesh.driver, i)
+    while(thread and i < end):
+        thread.setFlag(checkContent(sesh, thread.content))
+        addThread(sesh, thread)
         i += 1
-        thread = stripThread(sesh.driver, i)
+        thread = web.stripThread(sesh.driver, i)
 
 def populateFlags(sesh):
     list = g.readSheet(sesh.gsheet_creds, sesh.gsheet, sesh.flag_sheet, 1)
@@ -52,13 +58,19 @@ def checkContent(sesh, content):
     return False
 
 def addThread(sesh, thread):
-    g.writeData(sesh.gsheet_creds, sesh.gsheet, sesh.market_sheet, thread.dump())
-    if(checkNewUser(thread.user)):
-        newUser = c.User(name=thread.user, threads=1, score=thread.threadRating, rating=thread.threadRating)
+    g.writeData(sesh.gsheet_creds, sesh.gsheet, sesh.market_sheet, [thread.dump()])
+    if(checkNewUser(sesh, thread.user)):
+        if(thread.threadRating):
+            newUser = c.User(name=thread.user, threads=1, scored=1, score=int(thread.threadRating), rating=int(thread.threadRating))
+        else:
+            newUser = c.User(name=thread.user, threads=1, scored=0)
         sesh.addToManifest(newUser)
     else:
-        sesh.user_manifest[thread.user].addThread()
-        sesh.user_manifest[thread.user].updateAveRating(thread.threadRating)
+        if(thread.threadRating):
+            sesh.user_manifest[thread.user].addScored()
+            sesh.user_manifest[thread.user].updateAveRating(int(thread.threadRating))
+        else:
+            sesh.user_manifest[thread.user].addThread()
     for each in thread.replies:
         if(checkNewUser(each)):
             newUser = c.User(name=each, threads=0, replies=1)
@@ -69,8 +81,7 @@ def addThread(sesh, thread):
 
 def updateManifest(sesh):
     manifest = sesh.dumpManifest()
-    for each in manifest:
-        g.writeData(sesh.gsheet_creds, sesh.gsheet, sesh.user_sheet, each, overwrite=True)
+    g.writeData(sesh.gsheet_creds, sesh.gsheet, sesh.user_sheet, manifest, overwrite=True)
     return True
 
 # to run it from command line
