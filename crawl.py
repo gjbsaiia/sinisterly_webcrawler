@@ -16,12 +16,15 @@ def main():
     sesh = web.start()
     creds = g.configCreds("creds.json")
     sesh.gsheet_creds = creds
-    data = web.stripThread(sesh.driver, 6)
+    startCrawl(sesh)
 
-def startCrawl():
-    
-
-
+def startCrawl(sesh):
+    i = 6 # hardcoded because thread indexing starts here
+    thread = stripThread(sesh.driver, i)
+    while(thread):
+        addThread(thread, sesh)
+        i += 1
+        thread = stripThread(sesh.driver, i)
 
 def populateFlags(sesh):
     list = g.readSheet(sesh.gsheet_creds, sesh.gsheet, sesh.flag_sheet, 1)

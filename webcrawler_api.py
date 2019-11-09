@@ -37,38 +37,47 @@ def start():
 	return sesh
 
 def stripThread(driver, i):
-	data = []
-	key = ""
-	path = ""
 	th = str(i)
-	thread = Thread()
+	path = xpathDic["th_title1"]+th+xpathDic["th_title2"]
+	if(checkExists(driver, path)):
+		key = ""
+		thread = Thread()
+		try:
+			key = "th_title"
+			path = xpathDic["th_title1"]+th+xpathDic["th_title2"]
+			thread.setName(getTextFrom(driver, path))
+			key = "th_user"
+			path = xpathDic["th_user1"]+th+xpathDic["th_user2"]
+			thread.setUser(getTextFrom(driver, path))
+			key = "th_time"
+			path = xpathDic["th_time1"]+th+xpathDic["th_time2"]
+			thread.setTime(getTimeStamp(driver, path))
+			key = "th_replies"
+			path = xpathDic["th_replies1"]+th+xpathDic["th_replies2"]
+			thread.setNumReplies(getTextFrom(driver, path))
+			key = "th_views"
+			path = xpathDic["th_views1"]+th+xpathDic["th_views2"]
+			thread.setNumViews(getViewElement(driver, path))
+			# inside thread
+			path = xpathDic["th_title1"]+th+xpathDic["th_title2"]
+			getElementFrom(driver, path).click()
+			key = "url"
+			thread.setURL((driver.current_url).encode("utf-8"))
+			key = "th_content"
+			thread.setContent(getTextFrom(driver, xpathDic["th_content"]))
+		except selenium.common.exceptions.NoSuchElementException:
+			print("Failed on "+key+" with "+path+", on thread num "+th+"\n")
+		driver.get(market_url)
+		return thread
+	else:
+		return None
+
+def checkExists(driver, path):
 	try:
-		key = "th_title"
-		path = xpathDic["th_title1"]+th+xpathDic["th_title2"]
-		thread.set(getTextFrom(driver, path))
-		key = "th_user"
-		path = xpathDic["th_user1"]+th+xpathDic["th_user2"]
-		data.append(getTextFrom(driver, path))
-		key = "th_time"
-		path = xpathDic["th_time1"]+th+xpathDic["th_time2"]
-		data.append(getTimeStamp(driver, path))
-		key = "th_replies"
-		path = xpathDic["th_replies1"]+th+xpathDic["th_replies2"]
-		data.append(getTextFrom(driver, path))
-		key = "th_views"
-		path = xpathDic["th_views1"]+th+xpathDic["th_views2"]
-		key = "th_title"
-		data.append(getViewElement(driver, path))
-		path = xpathDic["th_title1"]+th+xpathDic["th_title2"]
-		getElementFrom(driver, path).click()
-		key = "url"
-		data.append((driver.current_url).encode("utf-8"))
-		key = "th_content"
-		data.append(getTextFrom(driver, xpathDic["th_content"]))
+		getElementFrom(driver, path)
+		return True
 	except selenium.common.exceptions.NoSuchElementException:
-		print("Failed on "+key+" with "+path+", on thread num "+th+"\n")
-	driver.get(market_url)
-	return data
+		return False
 
 def getTimeStamp(driver, xpath):
 	elem = getElementFrom(driver, xpath)

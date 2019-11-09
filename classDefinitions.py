@@ -48,7 +48,6 @@ class Thread: # object to enclose all data concerning one thread
 	def __init__(self, me="", name="", url="", rating="", replies=[], numRep = 0, views = 0, content = "", date = ""):
 		self.base_url = "https://sinister.ly/Thread-"
 		self.user = me # profile this post belongs to
-		self.threadUrl = url # thread url
 		self.threadName = name # name of thread
 		self.url = url
 		self.threadRating = rating # Out of 5 stars
@@ -57,6 +56,10 @@ class Thread: # object to enclose all data concerning one thread
 		self.views = views # number of thread views
 		self.content = content # content of original post
 		self.date = date # date post was posted
+	def setUser(self, user):
+		self.user = user
+	def setName(self, name):
+		self.threadName = name
 	def setURL(self, url):
 		self.threadUrl = url
 	def setRating(self, rating):
