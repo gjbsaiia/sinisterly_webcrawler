@@ -27,14 +27,21 @@ def readSheet(creds, sheet, subsheet, columns):
 	sheet = goog.open(sheet).worksheet(subsheet)
 	i = 2
 	j = 1
-	while(sheet.cell(i,j).value != ""):
-		while(j <= columns):
-			entry.append((sheet.cell(i,j).value).encode("utf-8"))
-			j += 1
-		j = 1
-		list.append(entry)
-		entry = []
-		i += 1
+	flag = (sheet.cell(i,j).value != "")
+	while(flag):
+		try:
+			while(j <= columns):
+				entry.append((sheet.cell(i,j).value).encode("utf-8"))
+				j += 1
+			j = 1
+			list.append(entry)
+			entry = []
+			i += 1
+			flag = (sheet.cell(i,j).value != "")
+		except gspread.exceptions.APIError:
+			time.sleep(100)
+			flag = (sheet.cell(i,j).value != "")
+
 	return list
 
 # finds last occupied cell
@@ -54,7 +61,11 @@ def writeData(creds, sheet, subsheet, data, overwrite=False):
 		i = findLast(sheet)
 	for each in data:
 		for datum in each:
-			sheet.update_cell(i, j, datum)
+			try:
+				sheet.update_cell(i, j, datum)
+			except gspread.exceptions.APIError:
+				time.sleep(100)
+				sheet.update_cell(i, j, datum)
 			j+=1
 		j = 1
 		i += 1

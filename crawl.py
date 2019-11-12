@@ -16,7 +16,6 @@ def main():
     sesh = web.start()
     creds = g.configCreds("creds.json")
     sesh.gsheet_creds = creds
-    # i = 6 # hardcoded because thread indexing starts here
     # thread = web.stripThread(sesh.driver, i)
     # thread.setFlag(checkContent(sesh, thread.content))
     # print(thread.dump())
@@ -52,8 +51,10 @@ def checkNewUser(sesh, name):
     except KeyError:
         return True
 
-def checkContent(sesh, content):
-    if any(flag in content for flag in sesh.flags):
+def checkContent(sesh, thread):
+    if any(flag in thread.content for flag in sesh.flags):
+        return True
+    if any(flag in thread.threadName for flag in sesh.flags):
         return True
     return False
 
