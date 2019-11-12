@@ -19,6 +19,8 @@ def main():
     # thread = web.stripThread(sesh.driver, i)
     # thread.setFlag(checkContent(sesh, thread.content))
     # print(thread.dump())
+    populateFlags(sesh)
+    populateManifest(sesh)
     startCrawl(sesh)
     updateManifest(sesh)
 
@@ -26,7 +28,7 @@ def startCrawl(sesh, end=1000):
     i = 6 # hardcoded because thread indexing starts here
     thread = web.stripThread(sesh.driver, i)
     while(thread and i < end):
-        thread.setFlag(checkContent(sesh, thread.content))
+        thread.setFlag(checkContent(sesh, thread))
         addThread(sesh, thread)
         i += 1
         thread = web.stripThread(sesh.driver, i)

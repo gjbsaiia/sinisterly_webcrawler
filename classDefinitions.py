@@ -78,7 +78,7 @@ class Thread: # object to enclose all data concerning one thread
 	def setTime(self, string):
 		self.date = string
 	def setContent(self, string):
-		self.content = string
+		self.content = string.lower()
 	def setFlag(self, flag):
 		self.flag = flag
 	def dump(self):
