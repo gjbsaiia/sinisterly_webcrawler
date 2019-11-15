@@ -16,12 +16,9 @@ def main():
     sesh = web.start()
     creds = g.configCreds("creds.json")
     sesh.gsheet_creds = creds
-    # thread = web.stripThread(sesh.driver, i)
-    # thread.setFlag(checkContent(sesh, thread.content))
-    # print(thread.dump())
     populateFlags(sesh)
     populateManifest(sesh)
-    startCrawl(sesh)
+    startCrawl(sesh, end = 17)
     updateManifest(sesh)
 
 def startCrawl(sesh, end=1000):
@@ -42,7 +39,7 @@ def populateFlags(sesh):
 def populateManifest(sesh):
     list = g.readSheet(sesh.gsheet_creds, sesh.gsheet, sesh.user_sheet, 5)
     for each in list:
-        entry = c.User(name=each[0], threads=each[1], replies=each[2], score=each[3], rating=each[4])
+        entry = c.User(name=each[0], threads=int(each[1]), replies=int(each[2]), score=float(each[3]), rating=float(each[4]), flags=int(each[5]))
         sesh.addToManifest(entry)
     return True
 
@@ -54,9 +51,15 @@ def checkNewUser(sesh, name):
         return True
 
 def checkContent(sesh, thread):
-    if any(flag in thread.content for flag in sesh.flags):
-        return True
-    if any(flag in thread.threadName for flag in sesh.flags):
+	flags = 0
+	for each in sesh.flags:
+		if each in thread.content:
+			flags += 1
+	for each in sesh.threadName:
+		if each in thread.content:
+			flags += 1
+    if(flags > 0):
+        thread.setNumFlags(flags)
         return True
     return False
 
@@ -64,16 +67,18 @@ def addThread(sesh, thread):
     g.writeData(sesh.gsheet_creds, sesh.gsheet, sesh.market_sheet, [thread.dump()])
     if(checkNewUser(sesh, thread.user)):
         if(thread.threadRating):
-            newUser = c.User(name=thread.user, threads=1, scored=1, score=int(thread.threadRating), rating=int(thread.threadRating))
+            newUser = c.User(name=thread.user, threads=1, scored=1, score=float(thread.threadRating), rating=float(thread.threadRating), flags=thread.numFlags)
         else:
-            newUser = c.User(name=thread.user, threads=1, scored=0)
+            newUser = c.User(name=thread.user, threads=1, scored=0, flags=thread.numFlags)
         sesh.addToManifest(newUser)
     else:
         if(thread.threadRating):
             sesh.user_manifest[thread.user].addScored()
-            sesh.user_manifest[thread.user].updateAveRating(int(thread.threadRating))
+            sesh.user_manifest[thread.user].updateAveRating(float(thread.threadRating))
+            sesh.user_manifest[thread.user].addFlags(thread.numFlags)
         else:
             sesh.user_manifest[thread.user].addThread()
+            sesh.user_manifest[thread.user].addFlags(thread.numFlags)
     for each in thread.replies:
         if(checkNewUser(each)):
             newUser = c.User(name=each, threads=0, replies=1)
