@@ -84,7 +84,8 @@ def writeData(creds, sheet, subsheet, data, overwrite=False):
 		body = {'range':str(subsheeet)+'!A2:I',
 				'values':data,
 				'majorDimension':'ROWS'}
-		print(json.dumps(body))
+		# print(data[0][1:])
+		# print(json.dumps(body))
 		request = serv.spreadsheets().values().append(spreadsheetId=SHEET_ID,
 													  range=str(subsheeet)+'!A2:I',valueInputOption='RAW',
 													  insertDataOption='INSERT_ROWS',
@@ -92,10 +93,11 @@ def writeData(creds, sheet, subsheet, data, overwrite=False):
 
 		try:
 			response = request.execute()
-			print(response)
+			#print(response)
+			return True
 		except gapi.errors.HttpError as err:
 			print(err)
-			return
+			return False
 
 
 	except gspread.exceptions.APIError:

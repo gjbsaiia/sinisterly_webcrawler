@@ -65,6 +65,7 @@ class Thread: # object to enclose all data concerning one thread
 		self.date = date # date post was posted
 		self.numFlags = numFlags
 		self.flag = flag
+		self.threadUrl = self.base_url
 	def setUser(self, user):
 		self.user = user
 	def setName(self, name):

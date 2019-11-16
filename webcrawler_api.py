@@ -17,6 +17,7 @@ from selenium.webdriver.support.ui import WebDriverWait
 from selenium.webdriver.support import expected_conditions as EC
 from selenium.webdriver.common.by import By
 from datetime import date
+from webdriver_manager.chrome import ChromeDriverManager
 
 # My Libraries
 from classDefinitions import Session
@@ -31,7 +32,10 @@ def start():
 	options.add_argument('--no-sandbox')
 	options.add_argument("disable-infobars")
 	options.add_argument("--disable-extensions")
-	sesh.driver = webdriver.Chrome(chrome_options=options)
+
+	sesh.driver = webdriver.Chrome(chrome_options=options, executable_path='chromedriver')
+
+	#sesh.driver = webdriver.Chrome(ChromeDriverManager().install())
 	sesh.driver.set_window_size(1120, 750)
 	sesh.driver.get(market_url)
 	return sesh
@@ -49,9 +53,7 @@ def stripThread(driver, i):
 			key = "th_user"
 			path = xpathDic["th_user1"]+th+xpathDic["th_user2"]
 			thread.setUser(getTextFrom(driver, path))
-			key = "th_time"
-			path = xpathDic["th_time1"]+th+xpathDic["th_time2"]
-			thread.setTime(getTimeStamp(driver, path))
+
 			key = "th_replies"
 			path = xpathDic["th_replies1"]+th+xpathDic["th_replies2"]
 			thread.setNumReplies(getTextFrom(driver, path))
@@ -65,9 +67,13 @@ def stripThread(driver, i):
 			path = xpathDic["th_title1"]+th+xpathDic["th_title2"]
 			getElementFrom(driver, path).click()
 			key = "url"
-			thread.setURL((driver.current_url).encode("utf-8"))
+			print(driver.current_url)
+			thread.setURL((driver.current_url))
 			key = "th_content"
 			thread.setContent(getContent(driver, xpathDic["th_content"]))
+			key = "th_time"
+			path = xpathDic["th_time1"]+th+xpathDic["th_time2"]
+			thread.setTime(getTimeStamp(driver, path))
 		except selenium.common.exceptions.NoSuchElementException:
 			print("Failed on "+key+" with "+path+", on thread num "+th+"\n")
 		driver.get(market_url)
@@ -84,6 +90,7 @@ def checkExists(driver, path):
 
 def getContent(driver, path):
 	text = getTextFrom(driver, path)
+	#text = text.decode('utf-8')
 	return "/n ".join(text.split("\n"))
 
 def get_text_excluding_children(driver, element):
@@ -112,13 +119,17 @@ def getRating(driver, path):
 
 def getTimeStamp(driver, xpath):
 	elem = getElementFrom(driver, xpath)
-	return (elem.get_attribute("title")).encode('utf-8')
+	return (elem.get_attribute("title"))#.encode('utf-8')
 
 def getViewElement(driver, xpath):
 	text = getTextFrom(driver, xpath)
-	return cleanNum(text.split("\n")[0])
+
+	# text = text.decode('utf-8')
+	temp1 = text.split("\n")[0]
+	return cleanNum(temp1)
 
 def cleanNum(num):
+
 	return int("".join(num.split(",")))
 
 def getElementFrom(driver, xpath):
@@ -126,4 +137,4 @@ def getElementFrom(driver, xpath):
 
 def getTextFrom(driver, xpath):
 	element = driver.find_element_by_xpath(xpath)
-	return (element.text).encode("utf-8")
+	return (element.text)
