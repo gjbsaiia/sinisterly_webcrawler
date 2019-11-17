@@ -48,8 +48,6 @@ def login(driver, path):
 		login_info = file.readlines()
 	user = login_info[0].split(",")[0]
 	password = login_info[0].split(",")[1].split("\n")[0]
-	elem = driver.find_element_by_xpath(xpathDic["login"])
-	elem.click()
 	elem = driver.find_element_by_xpath(xpathDic["user"])
 	elem.send_keys(user)
 	elem = driver.find_element_by_xpath(xpathDic["password"])
