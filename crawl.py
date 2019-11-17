@@ -23,13 +23,20 @@ def main():
     updateManifest(sesh)
 
 def startCrawl(sesh, end=1000):
+    j = 0
     i = 6 # hardcoded because thread indexing starts here
     thread = web.stripThread(sesh.driver, i)
-    while(thread and i < end):
-        thread.setFlag(checkContent(sesh, thread))
-        addThread(sesh, thread)
-        i += 1
-        thread = web.stripThread(sesh.driver, i)
+    while(j < end):
+        if(thread):
+            thread.setFlag(checkContent(sesh, thread))
+            addThread(sesh, thread)
+            i += 1
+            j += 1
+            thread = web.stripThread(sesh.driver, i)
+        else:
+            web.nextPage(sesh)
+            i = 3
+            thread = web.stripThread(sesh.driver, i)
 
 def populateFlags(sesh):
     list = g.readSheet(sesh.gsheet_creds, sesh.gsheet, sesh.flag_sheet, 2)

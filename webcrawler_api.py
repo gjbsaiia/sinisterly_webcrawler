@@ -56,6 +56,10 @@ def login(driver, path):
 	elem.click()
 	driver.get(market_url)
 
+def nextPage(driver):
+	elem = driver.find_element_by_xpath(xpathDic["next"])
+	elem.click()
+
 def stripThread(driver, i):
 	th = str(i)
 	path = xpathDic["th_title1"]+th+xpathDic["th_title2"]
