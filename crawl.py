@@ -14,29 +14,47 @@ import classDefinitions as c
 
 def main():
     sesh = web.start()
+    web.login(sesh.driver,'admin_config.txt')
     creds = g.configCreds("creds.json")
     sesh.gsheet_creds = creds
     populateFlags(sesh)
     populateManifest(sesh)
     print('crawling')
     startCrawl(sesh, end = 400)
+
     updateManifest(sesh)
 
 def startCrawl(sesh, end=1000):
     j = 0
     i = 6 # hardcoded because thread indexing starts here
     thread = web.stripThread(sesh.driver, i)
+    next_flag = False
     while(j < end):
+        print('i='+str(i))
+        if (thread):
+            print('if thread true')
+        else:
+            print('if thread false')
+            print(thread)
         if(thread):
+            print('SAME PAGE')
             thread.setFlag(checkContent(sesh, thread))
             addThread(sesh, thread)
             i += 1
             j += 1
             thread = web.stripThread(sesh.driver, i)
         else:
-            web.nextPage(sesh)
+            print('NEXT PAGE')
+            web.nextPage(sesh.driver,next_flag)
+            next_flag=True
             i = 3
+            j +=1
             thread = web.stripThread(sesh.driver, i)
+            # print('thread: '+str(thread.dump()))
+            # if(thread):
+            #     print('if thread true')
+            # else:
+            #     print('if thread false')
 
 def populateFlags(sesh):
     list = g.readSheet(sesh.gsheet_creds, sesh.gsheet, sesh.flag_sheet, 2)

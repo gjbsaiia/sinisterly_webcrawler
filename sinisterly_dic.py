@@ -27,5 +27,7 @@ xpathDic = {
 "th_time1": '/html/body/div[3]/div[2]/table/tbody/tr[',
 "th_time2": ']/td[7]/span/span',
 "th_content": '/html/body/div[3]/div[2]/div[5]/div[1]/div[2]/div[2]',
-"next": '/html/body/div[3]/div[2]/div[5]/div/a[6]'
+"next_fp": '/html/body/div[3]/div[2]/div[5]/div/a[6]',
+"next_rest": '/html/body/div[3]/div[2]/div[5]/div/a[7]'
+
 }

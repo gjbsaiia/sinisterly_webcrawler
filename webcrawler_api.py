@@ -43,6 +43,7 @@ def start():
 
 def login(driver, path):
 	driver.get(login_url)
+	print('LOGGIN IN')
 	login_info =[]
 	with open(path) as file:
 		login_info = file.readlines()
@@ -56,8 +57,11 @@ def login(driver, path):
 	elem.click()
 	driver.get(market_url)
 
-def nextPage(driver):
-	elem = driver.find_element_by_xpath(xpathDic["next"])
+def nextPage(driver,flag):
+	if(flag==False):
+		elem = driver.find_element_by_xpath(xpathDic["next_fp"])
+	else:
+		elem = driver.find_element_by_xpath(xpathDic["next_rest"])
 	elem.click()
 
 def stripThread(driver, i):
@@ -81,8 +85,16 @@ def stripThread(driver, i):
 			path = xpathDic["th_views1"]+th+xpathDic["th_views2"]
 			thread.setNumViews(getViewElement(driver, path))
 			key = "th_rating"
-			path = xpathDic["th_rating1"]+th+xpathDic["th_rating2"]
-			thread.setRating(getRating(driver, path))
+
+			try:
+				path = xpathDic["th_rating1"]+th+xpathDic["th_rating2"]
+				thread.setRating(getRating(driver, path))
+			except selenium.common.exceptions.NoSuchElementException:
+				thread.setRating(0)
+			# key = "th_time"
+			# path = xpathDic["th_time1"]+th+xpathDic["th_time2"]
+			# thread.setTime(getTimeStamp(driver, path))
+			thread.setTime('null for now')
 			# inside thread
 			path = xpathDic["th_title1"]+th+xpathDic["th_title2"]
 			getElementFrom(driver, path).click()
@@ -91,9 +103,7 @@ def stripThread(driver, i):
 			thread.setURL((driver.current_url))
 			key = "th_content"
 			thread.setContent(getContent(driver, xpathDic["th_content"]))
-			key = "th_time"
-			path = xpathDic["th_time1"]+th+xpathDic["th_time2"]
-			thread.setTime(getTimeStamp(driver, path))
+
 		except selenium.common.exceptions.NoSuchElementException:
 			print("Failed on "+key+" with "+path+", on thread num "+th+"\n")
 		driver.get(market_url)
@@ -149,8 +159,10 @@ def getViewElement(driver, xpath):
 	return cleanNum(temp1)
 
 def cleanNum(num):
-
-	return int("".join(num.split(",")))
+	try:
+		return int("".join(num.split(",")))
+	except ValueError:
+		return 0
 
 def getElementFrom(driver, xpath):
 	return driver.find_element_by_xpath(xpath)

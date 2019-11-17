@@ -77,9 +77,15 @@ class Thread: # object to enclose all data concerning one thread
 	def addReplier(self, replier):
 		self.commenters.append(commenter)
 	def setNumReplies(self, num):
-		self.numReplies = int(num)
+		try:
+			self.numReplies = int(num)
+		except ValueError:
+			self.numReplies=0
 	def setNumViews(self, num):
-		self.views = int(num)
+		try:
+			self.views = int(num)
+		except ValueError:
+			self.views =0
 	def setTime(self, string):
 		self.date = string
 	def setContent(self, string):
