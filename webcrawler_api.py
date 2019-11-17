@@ -22,6 +22,7 @@ from webdriver_manager.chrome import ChromeDriverManager
 # My Libraries
 from classDefinitions import Session
 from classDefinitions import Thread
+from sinisterly_dic import login_url
 from sinisterly_dic import market_url
 from sinisterly_dic import xpathDic
 
@@ -41,6 +42,7 @@ def start():
 	return sesh
 
 def login(driver, path):
+	driver.get(login_url)
 	login_info =[]
 	with open(path) as file:
 		login_info = file.readlines()
