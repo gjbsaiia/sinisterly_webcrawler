@@ -49,7 +49,7 @@ class User: # object the encloses all your data
 	def addFlags(self, num):
 		self.flagsTripped += num
 	def dump(self):
-		return [self.name, self.threadCount, self.scoredThread, self.replyCount, self.totalScore, self.aveRating, self.numFlags]
+		return [self.name, self.threadCount, self.scoredThread, self.replyCount, self.totalScore, self.aveRating, self.flagsTripped]
 
 class Thread: # object to enclose all data concerning one thread
 	def __init__(self, me="", name="", url="", rating="", replies=[], numRep = 0, views = 0, content = "", date = "", numFlags=0, flag=False):
