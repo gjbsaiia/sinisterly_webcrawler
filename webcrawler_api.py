@@ -40,6 +40,19 @@ def start():
 	sesh.driver.get(market_url)
 	return sesh
 
+def login(driver, path):
+	login_info =[]
+	with open(path) as file:
+		login_info = file.readlines()
+	user = login_info[0].split(",")[0]
+	password = login_info[0].split(",")[1]
+	elem = driver.find_element_by_xpath(xpathDic["user"])
+	elem.send_keys(user)
+	elem = driver.find_element_by_xpath(xpathDic["password"])
+	elem.send_keys(password)
+	elem = driver.find_element_by_xpath(xpathDic["submit"])
+	elem.click()
+
 def stripThread(driver, i):
 	th = str(i)
 	path = xpathDic["th_title1"]+th+xpathDic["th_title2"]

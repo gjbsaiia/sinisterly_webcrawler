@@ -10,6 +10,10 @@ market_url = "https://sinister.ly/Forum-Regular-Sales"
 # Here we have to map each xpath to a specific attribute we want to track
 xpathDic = {
 # thread index starts at 6
+"login": '/html/body/div[1]/div/a[1]',
+"user": '/html/body/div[6]/div/form/input[5]',
+"submit": '/html/body/div[6]/div/form/input[7]',
+"password": '/html/body/div[6]/div/form/input[6]',
 "th_title1": '/html/body/div[3]/div[2]/table/tbody/tr[',
 "th_title2": ']/td[3]/div/span/span/a',
 "th_user1": '/html/body/div[3]/div[2]/table/tbody/tr[',
