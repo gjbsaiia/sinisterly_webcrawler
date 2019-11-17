@@ -19,7 +19,7 @@ def main():
     populateFlags(sesh)
     populateManifest(sesh)
     print('crawling')
-    startCrawl(sesh, end = 17)
+    startCrawl(sesh, end = 400)
     updateManifest(sesh)
 
 def startCrawl(sesh, end=1000):
