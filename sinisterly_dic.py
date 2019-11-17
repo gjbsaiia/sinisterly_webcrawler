@@ -14,6 +14,8 @@ xpathDic = {
 "user": '/html/body/div[3]/div[2]/table/tbody/tr[2]/td/form/table/tbody/tr[2]/td[2]/input',
 "submit": '/html/body/div[3]/div[2]/table/tbody/tr[2]/td/form/table/tbody/tr[5]/td/input',
 "password": '/html/body/div[3]/div[2]/table/tbody/tr[2]/td/form/table/tbody/tr[3]/td[2]/input',
+"th_mptitle1": '/html/body/div[3]/div[2]/table/tbody/tr[',
+"th_mptitle2": ']/td[3]/div/span/span[1]/a',
 "th_title1": '/html/body/div[3]/div[2]/table/tbody/tr[',
 "th_title2": ']/td[3]/div/span/span/a',
 "th_user1": '/html/body/div[3]/div[2]/table/tbody/tr[',

@@ -67,7 +67,9 @@ def nextPage(driver,flag):
 def stripThread(driver, i):
 	th = str(i)
 	path = xpathDic["th_title1"]+th+xpathDic["th_title2"]
-	if(checkExists(driver, path)):
+	if not checkExists(driver, path):
+		path = xpathDic["th_mptitle1"]+th+xpathDic["th_mptitle2"]
+	if checkExists(driver, path):
 		key = ""
 		thread = Thread()
 		try:
