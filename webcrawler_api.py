@@ -52,6 +52,7 @@ def login(driver, path):
 	elem.send_keys(password)
 	elem = driver.find_element_by_xpath(xpathDic["submit"])
 	elem.click()
+	driver.get(market_url)
 
 def stripThread(driver, i):
 	th = str(i)
