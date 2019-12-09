@@ -97,7 +97,7 @@ class User: # object the encloses all your data
 		return self.percentFlagged
 	def calcCommInter(self):
 		if(self.views):
-			self.comm_inter = float(self.replyCount) / float(self.views)
+			self.comm_inter = float(self.replyCount)*( float(self.replyCount) / float(self.views) )
 		else:
 			self.comm_inter = 0.0
 		return self.comm_inter

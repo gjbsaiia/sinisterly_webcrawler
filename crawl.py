@@ -15,16 +15,32 @@ from sinisterly_dic import market_url
 
 def main():
     sesh = web.start()
-    creds = g.configCreds("creds.json")
-    sesh.gsheet_creds = creds
-    populateFlags(sesh)
-    populateManifest(sesh)
-    web.login(sesh.driver,'admin_config.txt')
-    print('crawling')
-    startCrawl(sesh, end = 40)
-    writeTopTen(sesh)
-    updateManifest(sesh)
-    sesh.driver.quit()
+    try:
+        creds = g.configCreds("creds.json")
+        sesh.gsheet_creds = creds
+        populateFlags(sesh)
+        populateManifest(sesh)
+        web.login(sesh.driver,'admin_config.txt')
+        print('crawling')
+        startCrawl(sesh, end = 40)
+        writeTopTen(sesh)
+        updateManifest(sesh)
+        sesh.driver.quit()
+    except Exception as e:
+        print("User Manifest:\n")
+        print(sesh.user_manifest)
+        print("***************************************\n")
+        print("Thread Library:\n")
+        print(sesh.threadLib)
+        print("***************************************\n")
+        print("Top Users:\n")
+        print(sesh.topUsers)
+        print("***************************************\n")
+        print("ERROR:\n")
+        print(type(e))
+        print(e)
+        sesh.driver.quit()
+
 
 def startCrawl(sesh, end=1000):
     j = 0
