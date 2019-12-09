@@ -28,7 +28,9 @@ column_dict = {1:"A",
 			   7:"G",
 			   8:"H",
 			   9:"I",
-			   10:"J"
+			   10:"J",
+			   11:"K",
+			   12:"L",
 			   }
 
 
@@ -60,7 +62,9 @@ def readSheet(creds, sheet, subsheet, columns):
 		print("API Limit\n")
 		time.sleep(110)
 		return readSheet(credss, sheeet, subsheeet, columnss)
-	return response['valueRanges'][0]['values']
+	if(response['valueRanges'][0]):
+		return response['valueRanges'][0]['values']
+	return []
 
 # finds last occupied cell
 def findLast(sheet):
