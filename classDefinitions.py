@@ -24,7 +24,7 @@ class Session:
 		if(self.threadLib.get(thread.user, False)):
 			self.threadLib.update({thread.user: [thread]})
 		else:
-			self.threadLib.update({thread.user: threadLib[thread.user].append(thread)})
+			self.threadLib.update({thread.user: self.threadLib[thread.user].append(thread)})
 	def dumpManifest(self):
 		list = []
 		for key,value in self.user_manifest.items():

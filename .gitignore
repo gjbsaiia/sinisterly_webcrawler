@@ -2,3 +2,4 @@
 *.txt
 *.pem
 /__pycache__/*
+*.pyc
