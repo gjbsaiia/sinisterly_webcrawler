@@ -24,6 +24,7 @@ def main():
     startCrawl(sesh, end = 10)
     writeTopTen(sesh)
     updateManifest(sesh)
+    sesh.driver.quit()
 
 def startCrawl(sesh, end=1000):
     j = 0
@@ -112,6 +113,7 @@ def writeTopTen(sesh):
         for each in topthreads:
             entry.append(each)
         topten.append(entry)
+    print(topten)
     g.writeData(sesh.gsheet_creds, sesh.gsheet, sesh.top_sheet, topten, overwrite=True)
 
 
