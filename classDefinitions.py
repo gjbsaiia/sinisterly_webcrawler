@@ -40,7 +40,7 @@ class Session:
 		return self.topUsers
 	def getTopForUser(self, user):
 		threads = self.threadLib[user]
-		flagged_threads = filter(lambda threads: threads.setFlag(), threads)
+		flagged_threads = list(filter(lambda threads: threads.setFlag(), threads))
 		flagged_threads.sort(key = lambda flagged_threads: (flagged_threads.views + flagged_threads.numReplies), reverse=True)
 		i = 0
 		topfive = []
