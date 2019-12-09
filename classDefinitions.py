@@ -22,9 +22,9 @@ class Session:
 		self.user_manifest.update({user.name: [user.calcValue(), user]})
 	def addThread(self, thread):
 		if(self.threadLib.get(thread.user, False)):
-			self.threadLib.update({thread.user: [thread]})
-		else:
 			self.threadLib.update({thread.user: self.threadLib[thread.user].append(thread)})
+		else:
+			self.threadLib.update({thread.user: [thread]})
 	def dumpManifest(self):
 		list = []
 		for key,value in self.user_manifest.items():
