@@ -17,8 +17,6 @@ from googleapiclient import discovery
 import googleapiclient as gapi
 
 
-from crawl import writeToLog
-
 
 SHEET_ID = "190fbfWoewEeNyZaJqAoi0erhY3W_DXTGG1UAQZPcHmM"
 
@@ -62,7 +60,7 @@ def readSheet(creds, sheet, subsheet, columns):
 		response=request.execute()
 
 	except gspread.exceptions.APIError:
-		writeToLog("API Limit\n")
+		print("API Limit\n")
 		time.sleep(110)
 		return readSheet(credss, sheeet, subsheeet, columnss)
 	if(response['valueRanges'][0].get('values', False)):
@@ -103,12 +101,12 @@ def writeData(creds, sheet, subsheet, data, overwrite=False):
 			#print(response)
 			return True
 		except gapi.errors.HttpError as err:
-			writeToLog(err)
+			print(err)
 			return False
 
 
 	except gspread.exceptions.APIError:
-		writeToLog("API Limit\n")
+		print("API Limit\n")
 		time.sleep(110)
 		writeData(credss, sheeet, subsheeet, dataa, overwritee)
 	return True

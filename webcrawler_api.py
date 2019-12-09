@@ -20,7 +20,6 @@ from datetime import date
 from webdriver_manager.chrome import ChromeDriverManager
 
 # My Libraries
-from crawl import writeToLog
 from classDefinitions import Session
 from classDefinitions import Thread
 from sinisterly_dic import login_url
@@ -56,7 +55,6 @@ def login(driver, path):
 	elem = driver.find_element_by_xpath(xpathDic["submit"])
 	elem.click()
 	driver.get(market_url)
-	writeToLog("Logged in")
 
 def nextPage(driver,flag):
 	if(flag==False):
@@ -94,12 +92,11 @@ def stripThread(driver, page_url, i):
 			path = xpathDic["th_title1"]+th+xpathDic["th_title2"]
 			getElementFrom(driver, path).click()
 			key = "url"
-			writeToLog(driver.current_url)
 			thread.setURL(driver.current_url)
 			key = "th_content"
 			thread.setContent(getContent(driver, xpathDic["th_content"]))
 		except selenium.common.exceptions.NoSuchElementException:
-			writeToLog("Failed on "+key+" with "+path+", on thread num "+th+"\n")
+			raise selenium.common.exceptions.NoSuchElementException("Failed on "+key+" with "+path+", on thread num "+th)
 
 		driver.get(page_url)
 		return thread
