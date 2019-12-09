@@ -18,8 +18,8 @@ def main():
     web.login(sesh.driver,'admin_config.txt')
     creds = g.configCreds("creds.json")
     sesh.gsheet_creds = creds
-    populateFlags(sesh)
-    populateManifest(sesh)
+    # populateFlags(sesh)
+    # populateManifest(sesh)
     print('crawling')
     startCrawl(sesh, end = 10)
     writeTopTen(sesh)
