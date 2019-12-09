@@ -45,7 +45,10 @@ class Session:
 		i = 0
 		topfive = []
 		while(i < 5):
-			topfive.append(flagged_threads[i].threadUrl)
+			try:
+				topfive.append(flagged_threads[i].threadUrl)
+			except IndexError:
+				topfive.append('')
 			i += 1
 		return topfive
 
