@@ -19,9 +19,9 @@ def main():
     sesh.gsheet_creds = creds
     populateFlags(sesh)
     populateManifest(sesh)
-    print(sesh.flags+"\n")
+    print(sesh.flags)
     web.login(sesh.driver,'admin_config.txt')
-    print('crawling'+"\n")
+    print('crawling')
     startCrawl(sesh, end = 10)
     writeTopTen(sesh)
     updateManifest(sesh)
