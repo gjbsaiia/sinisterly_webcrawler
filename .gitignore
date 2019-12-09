@@ -1,3 +1,4 @@
 *.json
 *.txt
 *.pem
+/__pycache__/*
