@@ -40,7 +40,7 @@ def startCrawl(sesh, end=1000):
             print(thread)
         if(thread):
             print('SAME PAGE')
-            thread.addFlags(checkContent(sesh, thread))
+            thread.setNumFlags(checkContent(sesh, thread))
             addThread(sesh, thread)
             i += 1
             j += 1
