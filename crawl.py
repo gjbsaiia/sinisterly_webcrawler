@@ -25,6 +25,8 @@ def main():
         startCrawl(sesh)
         writeTopTen(sesh)
         updateManifest(sesh)
+        writeToLog("**************************************************\n")
+        writeToLog("Finished Updating GSheet")
         sesh.driver.quit()
     except Exception as e:
         writeToLog("User Manifest:\n")
@@ -71,6 +73,8 @@ def startCrawl(sesh, end=1000):
             j += 1
         writeToLog("Stripping Thread Number "+str(j)+"...")
         thread = web.stripThread(sesh.driver, current_page, i)
+    writeToLog("**************************************************\n")
+    writeToLog("Finished Crawling. Stripped "+str(end)+" values.")
 
 def populateFlags(sesh):
     list = g.readSheet(sesh.gsheet_creds, sesh.gsheet, sesh.flag_sheet, 2)
@@ -132,12 +136,16 @@ def writeTopTen(sesh):
 def writeToLog(string):
     with open("log.txt", "a") as f:
         f.write(string)
+        f.write("\n")
     f.close()
     print(string)
 
 def freshLog():
     with open("log.txt", "w+") as f:
-        f.write("WEBCRAWLER ERRORS:\n")
+        f.write("Webcrawler Log:\n")
+        f.write("\n")
+        f.write("**************************************************\n")
+        f.write("\n")
     f.close()
 
 
