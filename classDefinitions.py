@@ -28,7 +28,7 @@ class Session:
 	def dumpManifest(self):
 		list = []
 		for key,value in self.user_manifest.items():
-			list.append(value.dump())
+			list.append(value[1].dump())
 		return list
 	def buildTopUsers(self):
 		values = list(self.user_manifest.values())
