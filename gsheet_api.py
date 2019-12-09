@@ -63,6 +63,7 @@ def readSheet(creds, sheet, subsheet, columns):
 		time.sleep(110)
 		return readSheet(credss, sheeet, subsheeet, columnss)
 	if(response['valueRanges'][0]):
+		print(response['valueRanges'][0])
 		return response['valueRanges'][0]['values']
 	return []
 
