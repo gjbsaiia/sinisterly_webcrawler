@@ -64,7 +64,7 @@ def nextPage(driver,flag):
 		elem = driver.find_element_by_xpath(xpathDic["next_rest"])
 	elem.click()
 
-def stripThread(driver, i):
+def stripThread(driver, page_url, i):
 	th = str(i)
 	path = xpathDic["th_title1"]+th+xpathDic["th_title2"]
 	if not checkExists(driver, path):
@@ -79,20 +79,12 @@ def stripThread(driver, i):
 			key = "th_user"
 			path = xpathDic["th_user1"]+th+xpathDic["th_user2"]
 			thread.setUser(getTextFrom(driver, path))
-
 			key = "th_replies"
 			path = xpathDic["th_replies1"]+th+xpathDic["th_replies2"]
 			thread.setNumReplies(getTextFrom(driver, path))
 			key = "th_views"
 			path = xpathDic["th_views1"]+th+xpathDic["th_views2"]
 			thread.setNumViews(getViewElement(driver, path))
-			key = "th_rating"
-
-			try:
-				path = xpathDic["th_rating1"]+th+xpathDic["th_rating2"]
-				thread.setRating(getRating(driver, path))
-			except selenium.common.exceptions.NoSuchElementException:
-				thread.setRating(0)
 			# key = "th_time"
 			# path = xpathDic["th_time1"]+th+xpathDic["th_time2"]
 			# thread.setTime(getTimeStamp(driver, path))
@@ -102,13 +94,13 @@ def stripThread(driver, i):
 			getElementFrom(driver, path).click()
 			key = "url"
 			print(driver.current_url)
-			thread.setURL((driver.current_url))
+			thread.setURL(driver.current_url)
 			key = "th_content"
 			thread.setContent(getContent(driver, xpathDic["th_content"]))
 
 		except selenium.common.exceptions.NoSuchElementException:
 			print("Failed on "+key+" with "+path+", on thread num "+th+"\n")
-		driver.get(market_url)
+		driver.get(page_url)
 		return thread
 	else:
 		return None

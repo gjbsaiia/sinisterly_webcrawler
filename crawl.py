@@ -11,6 +11,7 @@ import sys
 import webcrawler_api as web
 import gsheet_api as g
 import classDefinitions as c
+from sinisterly_dic import market_url
 
 def main():
     sesh = web.start()
@@ -20,14 +21,15 @@ def main():
     populateFlags(sesh)
     populateManifest(sesh)
     print('crawling')
-    startCrawl(sesh, end = 400)
-
+    startCrawl(sesh, end = 10)
+    writeTopTen(sesh)
     updateManifest(sesh)
 
 def startCrawl(sesh, end=1000):
     j = 0
     i = 6 # hardcoded because thread indexing starts here
-    thread = web.stripThread(sesh.driver, i)
+    current_page = market_url
+    thread = web.stripThread(sesh.driver, current_page, i)
     next_flag = False
     while(j < end):
         print('i='+str(i))
@@ -38,23 +40,18 @@ def startCrawl(sesh, end=1000):
             print(thread)
         if(thread):
             print('SAME PAGE')
-            thread.setFlag(checkContent(sesh, thread))
+            thread.addFlags(checkContent(sesh, thread))
             addThread(sesh, thread)
             i += 1
             j += 1
-            thread = web.stripThread(sesh.driver, i)
         else:
             print('NEXT PAGE')
             web.nextPage(sesh.driver,next_flag)
             next_flag=True
+            current_page = driver.current_url
             i = 3
             j +=1
-            thread = web.stripThread(sesh.driver, i)
-            # print('thread: '+str(thread.dump()))
-            # if(thread):
-            #     print('if thread true')
-            # else:
-            #     print('if thread false')
+        thread = web.stripThread(sesh.driver, current_page, i)
 
 def populateFlags(sesh):
     list = g.readSheet(sesh.gsheet_creds, sesh.gsheet, sesh.flag_sheet, 2)
@@ -63,11 +60,11 @@ def populateFlags(sesh):
     return True
 
 def populateManifest(sesh):
-    list = g.readSheet(sesh.gsheet_creds, sesh.gsheet, sesh.user_sheet, 6)
-
+    list = g.readSheet(sesh.gsheet_creds, sesh.gsheet, sesh.user_sheet, 7)
     for each in list:
-        entry = c.User(name=each[0], threads=int(each[1]), replies=int(each[2]), score=float(each[3]), rating=float(each[4]), flags=int(each[5]))
-        sesh.addToManifest(entry)
+        entry = c.User(name=each[0], threads=int(each[2]), flagged=int(each[3]), replies=int(each[4]), views=int(each[5]), flags=int(each[6]))
+        entry.calcValue()
+        sesh.addUser(entry)
     return True
 
 def checkNewUser(sesh, name):
@@ -87,39 +84,36 @@ def checkContent(sesh, thread):
         if each in thread.threadName:
             flags += 1
 
-    if(flags > 0):
-        thread.setNumFlags(flags)
-        return True
-    return False
+    return flags
 
 def addThread(sesh, thread):
-    g.writeData(sesh.gsheet_creds, sesh.gsheet, sesh.market_sheet, [thread.dump()])
+    sesh.addThread(thread)
     if(checkNewUser(sesh, thread.user)):
-        if(thread.threadRating):
-            newUser = c.User(name=thread.user, threads=1, scored=1, score=float(thread.threadRating), rating=float(thread.threadRating), flags=thread.numFlags)
-        else:
-            newUser = c.User(name=thread.user, threads=1, scored=0, flags=thread.numFlags)
-        sesh.addToManifest(newUser)
+        user = c.User(name= thread.user)
     else:
-        if(thread.threadRating):
-            sesh.user_manifest[thread.user].addScored()
-            sesh.user_manifest[thread.user].updateAveRating(float(thread.threadRating))
-            sesh.user_manifest[thread.user].addFlags(thread.numFlags)
-        else:
-            sesh.user_manifest[thread.user].addThread()
-            sesh.user_manifest[thread.user].addFlags(thread.numFlags)
-    for each in thread.replies:
-        if(checkNewUser(each)):
-            newUser = c.User(name=each, threads=0, replies=1)
-            sesh.addToManifest(newUser)
-        else:
-            sesh.user_manifest[thread.user].addReply()
+        user = sesh.user_manifest[thread.user]
+    user.addThread_all(thread.setFlag(), thread.replyCount, thread.flagsTripped, thread.views)
+    sesh.addUser(user)
+    g.writeData(sesh.gsheet_creds, sesh.gsheet, sesh.market_sheet, [thread.dump()])
     return True
 
 def updateManifest(sesh):
     manifest = sesh.dumpManifest()
     g.writeData(sesh.gsheet_creds, sesh.gsheet, sesh.user_sheet, manifest, overwrite=True)
     return True
+
+def writeTopTen(sesh):
+    users = sesh.buildTopUsers()
+    topten = []
+    for user in users:
+        entry = [user[0], user[1]]
+        topthreads = sesh.getTopForUser(user[0])
+        for each in topthreads:
+            entry.append(each)
+        topten.append(entry)
+    g.writeData(sesh.gsheet_creds, sesh.gsheet, sesh.top_sheet, topten, overwrite=True)
+
+
 
 # to run it from command line
 if __name__ == '__main__':

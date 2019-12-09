@@ -17,82 +17,152 @@ class Session:
 		self.flag_sheet = "Flag Words"
 		self.flags = []
 		self.topUsers = []
-	def addToManifest(self, user):
-		self.user_manifest.update({user.name: user})
+		self.threadLib = {}
+	def addUser(self, user):
+		self.user_manifest.update({user.name: [user.calcValue(), user]})
+	def addThread(self, thread):
+		if(threadLib.get(thread.user, default=False)):
+			threadLib.update({thread.user: [thread]})
+		else:
+			threadLib.update({thread.user: threadLib[thread.user].append(thread)})
 	def dumpManifest(self):
 		list = []
 		for key,value in self.user_manifest.items():
 			list.append(value.dump())
 		return list
+	def buildTopUsers(self):
+		values = list(self.user_manifest.values())
+		values.sort(key = lambda values: values[0], reverse=True)
+		i = 0
+		while( i < 10 ):
+			self.topUsers.append([each[i][1].name, each[i][1].calcValue()])
+			i += 1
+		return self.topUsers
+	def getTopForUser(self, user):
+		threads = threadLib[user]
+		flagged_threads = filter(lambda threads: threads.setFlag(), threads)
+		flagged_threads.sort(key = lambda flagged_threads: (flagged_threads.views + flagged_threads.numReplies), reverse=True)
+		i = 0
+		topfive = []
+		while(i < 5):
+			topfive.append(flagged_threads[i].threadUrl)
+			i += 1
+		return topfive
 
 class User: # object the encloses all your data
-	def __init__(self, name, threads=0, scored=0, replies=0, score=0, rating=0, flags=0):
+	def __init__(self, name, threads=0, flagged=0, replies=0, views=0, flags=0):
 		self.name = name # API Key to optional Google Sheet functionality
 		self.base_url = "https://sinister.ly/User-"
 		self.profile_url = self.base_url+name
 		self.threadCount = threads
-		self.scoredThread = scored
+		self.flaggedThread = flagged
 		self.replyCount = replies
-		self.totalScore = score
-		self.aveRating = rating
+		self.views = views
 		self.flagsTripped = flags
+		self.buzzDesity = 0.0
+		self.percentFlagged = 0.0
+		self.comm_inter = 0.0
+		self.user_value = 0.0
+	def addThread_all(self, flth, replies, flags, views):
+		self.addThread()
+		if(flth):
+			self.addFlagged()
+		self.addReplies(replies)
+		self.addFlags(flags)
+		self.addViews(views)
 	def addThread(self):
 		self.threadCount += 1
-	def addScored(self):
-		self.threadCount += 1
-		self.scoredThread += 1
-	def addReply(self):
-		self.replyCount += 1
-	def updateAveRating(self, rating):
-		self.totalScore += float(rating)
-		self.aveRating = float(self.totalScore) / float(self.scoredThread)
+	def addFlagged(self):
+		self.flaggedThread += 1
+	def addReplies(self, num):
+		self.replyCount += num
 	def addFlags(self, num):
 		self.flagsTripped += num
+	def addViews(self, num):
+		self.views += num
+	def calcBuzz(self):
+		if(self.threadCount):
+			self.buzzDesity = float(self.flagsTripped)/float(self.threadCount)
+		else:
+			self.buzzDesity = 0.0
+		return self.buzzDesity
+	def calcPercentFlagged(self):
+		if(self.threadCount):
+			self.percentFlagged = float(self.flaggedThread) / float(self.threadCount)
+		else:
+			self.buzzDesity = 0.0
+		return self.percentFlagged
+	def calcCommInter(self):
+		if(self.views):
+			self.comm_inter = float(self.replyCount) / float(self.views)
+		else:
+			self.comm_inter = 0.0
+		return self.comm_inter
+	def calcValue(self):
+		self.user_value = (self.calcBuzz() * self.calcPercentFlagged())*(self.threadCount) + (self.calcCommInter())
+		return self.user_value
 	def dump(self):
-		return [self.name, self.threadCount, self.scoredThread, self.replyCount, self.totalScore, self.aveRating, self.flagsTripped]
+		self.calcValue()
+		return [self.name,
+				self.user_value,
+				self.threadCount,
+				self.flaggedThread,
+				self.replyCount,
+				self.views,
+				self.flagsTripped,
+				self.buzzDesity,
+				self.percentFlagged,
+				self.comm_inter,
+				self.profile_url,]
 
 class Thread: # object to enclose all data concerning one thread
 	def __init__(self, me="", name="", url="", rating="", replies=[], numRep = 0, views = 0, content = "", date = "", numFlags=0, flag=False):
-		self.base_url = "https://sinister.ly/Thread-"
 		self.user = me # profile this post belongs to
 		self.threadName = name # name of thread
-		self.url = url
-		self.threadRating = rating # Out of 5 stars
-		self.replies = replies # usernames for all users who have replied on thread
 		self.numReplies = numRep # number of replies
 		self.views = views # number of thread views
 		self.content = content # content of original post
 		self.date = date # date post was posted
 		self.numFlags = numFlags
 		self.flag = flag
-		self.threadUrl = self.base_url
+		self.threadUrl = url
 	def setUser(self, user):
 		self.user = user
 	def setName(self, name):
 		self.threadName = name
 	def setURL(self, url):
 		self.threadUrl = url
-	def setRating(self, rating):
-		self.threadRating = rating
-	def addReplier(self, replier):
-		self.commenters.append(commenter)
 	def setNumReplies(self, num):
 		try:
 			self.numReplies = int(num)
 		except ValueError:
+			print("ERROR: Reply number not recovered, "+str(num))
 			self.numReplies=0
 	def setNumViews(self, num):
 		try:
 			self.views = int(num)
 		except ValueError:
-			self.views =0
+			print("ERROR: Views number not recovered, "+str(num))
+			self.views = 0
 	def setTime(self, string):
 		self.date = string
 	def setContent(self, string):
 		self.content = string.lower()
 	def setNumFlags(self, num):
 		self.numFlags = num
-	def setFlag(self, flag):
-		self.flag = flag
+	def setFlag(self):
+		if(self.numFlags):
+			self.flag = True
+		else:
+			self.flag = False
+		return self.flag
 	def dump(self):
-		return [self.threadName, self.user, self.date, self.numReplies, self.views, self.threadRating, self.threadUrl, self.content, self.flag]
+		return [self.threadName,
+				self.user,
+				self.date,
+				self.numReplies,
+				self.views,
+				self.numFlags,
+				self.threadUrl,
+				self.content,
+				self.setFlag()]
