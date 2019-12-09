@@ -8,6 +8,7 @@ import os
 import sys
 
 # My Libraries
+import selenium
 import webcrawler_api as web
 import gsheet_api as g
 import classDefinitions as c
