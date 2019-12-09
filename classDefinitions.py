@@ -21,7 +21,7 @@ class Session:
 	def addUser(self, user):
 		self.user_manifest.update({user.name: [user.calcValue(), user]})
 	def addThread(self, thread):
-		if(self.threadLib.get(thread.user, default=False)):
+		if(self.threadLib.get(thread.user, False)):
 			self.threadLib.update({thread.user: [thread]})
 		else:
 			self.threadLib.update({thread.user: threadLib[thread.user].append(thread)})
