@@ -92,7 +92,7 @@ def addThread(sesh, thread):
         user = c.User(name= thread.user)
     else:
         user = sesh.user_manifest[thread.user]
-    user.addThread_all(thread.setFlag(), thread.replyCount, thread.flagsTripped, thread.views)
+    user.addThread_all(thread.setFlag(), thread.numReplies, thread.numFlags, thread.views)
     sesh.addUser(user)
     print(user.dump())
     g.writeData(sesh.gsheet_creds, sesh.gsheet, sesh.market_sheet, [thread.dump()])
