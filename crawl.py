@@ -21,7 +21,7 @@ def main():
     populateManifest(sesh)
     web.login(sesh.driver,'admin_config.txt')
     print('crawling')
-    startCrawl(sesh, end = 10)
+    startCrawl(sesh, end = 40)
     writeTopTen(sesh)
     updateManifest(sesh)
     sesh.driver.quit()
