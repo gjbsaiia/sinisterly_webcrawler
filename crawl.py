@@ -39,6 +39,7 @@ def main():
         print("ERROR:\n")
         print(type(e))
         print(e)
+        print(e.args)
         sesh.driver.quit()
 
 

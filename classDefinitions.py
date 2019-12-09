@@ -21,10 +21,13 @@ class Session:
 	def addUser(self, user):
 		self.user_manifest.update({user.name: [user.calcValue(), user]})
 	def addThread(self, thread):
-		if(self.threadLib.get(thread.user, False)):
-			self.threadLib.update({thread.user: self.threadLib[thread.user].append(thread)})
+		threads = self.threadLib.get(thread.user, False)
+		if(threads):
+			threads.append(thread)
 		else:
-			self.threadLib.update({thread.user: [thread]})
+			threads = []
+			threads.append(thread)
+		self.threadLib.update({thread.user: threads})
 	def dumpManifest(self):
 		list = []
 		for key,value in self.user_manifest.items():
@@ -39,18 +42,22 @@ class Session:
 			i += 1
 		return self.topUsers
 	def getTopForUser(self, user):
-		threads = self.threadLib[user]
-		flagged_threads = list(filter(lambda threads: threads.setFlag(), threads))
-		flagged_threads.sort(key = lambda flagged_threads: (flagged_threads.views + flagged_threads.numReplies), reverse=True)
-		i = 0
-		topfive = []
-		while(i < 5):
-			try:
-				topfive.append(flagged_threads[i].threadUrl)
-			except IndexError:
-				topfive.append('')
-			i += 1
-		return topfive
+		threads = self.threadLib.get(user, False)
+		if(threads):
+			flagged_threads = list(filter(lambda threads: (threads.flag), threads))
+			flagged_threads.sort(key = lambda flagged_threads: (flagged_threads.views + flagged_threads.numReplies), reverse=True)
+			i = 0
+			topfive = []
+			while(i < 5):
+				try:
+					topfive.append(flagged_threads[i].threadUrl)
+				except IndexError:
+					topfive.append('')
+				i += 1
+			return topfive
+		else:
+			print("ERROR!!! Somehow user was not recorded: "+user)
+			raise Exception(user)
 
 class User: # object the encloses all your data
 	def __init__(self, name, threads=0, flagged=0, replies=0, views=0, flags=0):
@@ -153,6 +160,7 @@ class Thread: # object to enclose all data concerning one thread
 		self.content = string.lower()
 	def setNumFlags(self, num):
 		self.numFlags = num
+		self.setFlag()
 	def setFlag(self):
 		if(self.numFlags):
 			self.flag = True
