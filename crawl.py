@@ -19,7 +19,8 @@ def main():
     creds = g.configCreds("creds.json")
     sesh.gsheet_creds = creds
     # populateFlags(sesh)
-    # populateManifest(sesh)
+    populateManifest(sesh)
+    print(sesh,flags)
     print('crawling')
     startCrawl(sesh, end = 10)
     writeTopTen(sesh)

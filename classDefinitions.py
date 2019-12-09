@@ -35,7 +35,7 @@ class Session:
 		values.sort(key = lambda values: values[0], reverse=True)
 		i = 0
 		while( i < 10 ):
-			self.topUsers.append([each[i][1].name, each[i][1].calcValue()])
+			self.topUsers.append([values[i][1].name, values[i][1].calcValue()])
 			i += 1
 		return self.topUsers
 	def getTopForUser(self, user):
