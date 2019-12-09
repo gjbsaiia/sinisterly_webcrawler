@@ -55,24 +55,30 @@ def startCrawl(sesh, end=1000):
     current_page = market_url
     thread = web.stripThread(sesh.driver, current_page, i)
     next_flag = False
-    while(j < end):
-        if(thread):
-            thread.setNumFlags(checkContent(sesh, thread))
-            addThread(sesh, thread)
-            i += 1
-            j += 1
-        else:
-            page_num += 1
-            writeToLog("**************************************************\n")
-            writeToLog("Page number: "+str(page_num))
-            writeToLog("**************************************************\n")
-            web.nextPage(sesh.driver,next_flag)
-            next_flag=True
-            current_page = sesh.driver.current_url
-            i = 3
-            j += 1
-        writeToLog("Stripping Thread Number "+str(j)+"...")
-        thread = web.stripThread(sesh.driver, current_page, i)
+    try:
+        while(j < end):
+            if(thread):
+                thread.setNumFlags(checkContent(sesh, thread))
+                addThread(sesh, thread)
+                i += 1
+                j += 1
+            else:
+                page_num += 1
+                writeToLog("**************************************************\n")
+                writeToLog("Page number: "+str(page_num))
+                writeToLog("**************************************************\n")
+                web.nextPage(sesh.driver,next_flag)
+                next_flag=True
+                current_page = sesh.driver.current_url
+                i = 3
+                j += 1
+            writeToLog("Stripping Thread Number "+str(j)+"...")
+            thread = web.stripThread(sesh.driver, current_page, i)
+    except selenium.common.exceptions.NoSuchElementException:
+        writeToLog("ERROR:\n")
+        writeToLog(str(type(e)))
+        writeToLog(str(e))
+        end = j
     writeToLog("**************************************************\n")
     writeToLog("Finished Crawling. Stripped "+str(end)+" values.")
 
