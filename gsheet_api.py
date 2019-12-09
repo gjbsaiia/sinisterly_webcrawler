@@ -62,8 +62,7 @@ def readSheet(creds, sheet, subsheet, columns):
 		print("API Limit\n")
 		time.sleep(110)
 		return readSheet(credss, sheeet, subsheeet, columnss)
-	if(response['valueRanges'][0]):
-		print(response['valueRanges'][0])
+	if(response['valueRanges'][0].get('values', False)):
 		return response['valueRanges'][0]['values']
 	return []
 
