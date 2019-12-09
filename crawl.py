@@ -49,7 +49,7 @@ def startCrawl(sesh, end=1000):
             print('NEXT PAGE')
             web.nextPage(sesh.driver,next_flag)
             next_flag=True
-            current_page = driver.current_url
+            current_page = sesh.driver.current_url
             i = 3
             j +=1
         thread = web.stripThread(sesh.driver, current_page, i)
