@@ -14,6 +14,7 @@ import classDefinitions as c
 from sinisterly_dic import market_url
 
 def main():
+    freshLog()
     sesh = web.start()
     try:
         creds = g.configCreds("creds.json")
@@ -21,54 +22,54 @@ def main():
         populateFlags(sesh)
         populateManifest(sesh)
         web.login(sesh.driver,'admin_config.txt')
-        print('crawling')
-        startCrawl(sesh, end = 40)
+        startCrawl(sesh)
         writeTopTen(sesh)
         updateManifest(sesh)
         sesh.driver.quit()
     except Exception as e:
-        print("User Manifest:\n")
-        print(sesh.user_manifest)
-        print("***************************************\n")
-        print("Thread Library:\n")
-        print(sesh.threadLib)
-        print("***************************************\n")
-        print("Top Users:\n")
-        print(sesh.topUsers)
-        print("***************************************\n")
-        print("ERROR:\n")
-        print(type(e))
-        print(e)
-        print(e.args)
+        writeToLog("User Manifest:\n")
+        writeToLog(sesh.user_manifest)
+        writeToLog("***************************************\n")
+        writeToLog("Thread Library:\n")
+        writeToLog(sesh.threadLib)
+        writeToLog("***************************************\n")
+        writeToLog("Top Users:\n")
+        writeToLog(sesh.topUsers)
+        writeToLog("***************************************\n")
+        writeToLog("ERROR:\n")
+        writeToLog(type(e))
+        writeToLog(e)
         sesh.driver.quit()
 
 
 def startCrawl(sesh, end=1000):
     j = 0
     i = 6 # hardcoded because thread indexing starts here
+    page_num = 1
+    writeToLog('Starting to Crawl!')
+    writeToLog("**************************************************\n")
+    writeToLog("Page number: "+str(page_num))
+    writeToLog("**************************************************\n")
     current_page = market_url
     thread = web.stripThread(sesh.driver, current_page, i)
     next_flag = False
     while(j < end):
-        print('i='+str(i))
-        if (thread):
-            print('if thread true')
-        else:
-            print('if thread false')
-            print(thread)
         if(thread):
-            print('SAME PAGE')
             thread.setNumFlags(checkContent(sesh, thread))
             addThread(sesh, thread)
             i += 1
             j += 1
         else:
-            print('NEXT PAGE')
+            page_num += 1
+            writeToLog("**************************************************\n")
+            writeToLog("Page number: "+str(page_num))
+            writeToLog("**************************************************\n")
             web.nextPage(sesh.driver,next_flag)
             next_flag=True
             current_page = sesh.driver.current_url
             i = 3
-            j +=1
+            j += 1
+        writeToLog("Stripping Thread Number "+str(j)+"...")
         thread = web.stripThread(sesh.driver, current_page, i)
 
 def populateFlags(sesh):
@@ -95,13 +96,10 @@ def checkNewUser(sesh, name):
 def checkContent(sesh, thread):
     flags = 0
     for each in sesh.flags:
-
         if each in thread.content:
             flags += 1
-
         if each in thread.threadName:
             flags += 1
-
     return flags
 
 def addThread(sesh, thread):
@@ -112,7 +110,6 @@ def addThread(sesh, thread):
         user = sesh.user_manifest[thread.user][1]
     user.addThread_all(thread.setFlag(), thread.numReplies, thread.numFlags, thread.views)
     sesh.addUser(user)
-    print(user.dump())
     g.writeData(sesh.gsheet_creds, sesh.gsheet, sesh.market_sheet, [thread.dump()])
     return True
 
@@ -130,9 +127,18 @@ def writeTopTen(sesh):
         for each in topthreads:
             entry.append(each)
         topten.append(entry)
-    print(topten)
     g.writeData(sesh.gsheet_creds, sesh.gsheet, sesh.top_sheet, topten, overwrite=True)
 
+def writeToLog(string):
+    with open("log.txt", "a") as f:
+        f.write(string)
+    f.close()
+    print(string)
+
+def freshLog():
+    with open("log.txt", "w+") as f:
+        f.write("WEBCRAWLER ERRORS:\n")
+    f.close()
 
 
 # to run it from command line
