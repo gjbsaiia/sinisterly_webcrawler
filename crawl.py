@@ -14,12 +14,12 @@ import classDefinitions as c
 from sinisterly_dic import market_url
 
 def main():
+    sesh = web.start()
     creds = g.configCreds("creds.json")
     sesh.gsheet_creds = creds
     # populateFlags(sesh)
     populateManifest(sesh)
     print(sesh,flags)
-    sesh = web.start()
     web.login(sesh.driver,'admin_config.txt')
     print('crawling')
     startCrawl(sesh, end = 10)
