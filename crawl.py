@@ -92,7 +92,7 @@ def addThread(sesh, thread):
     if(checkNewUser(sesh, thread.user)):
         user = c.User(name= thread.user)
     else:
-        user = sesh.user_manifest[thread.user]
+        user = sesh.user_manifest[thread.user][1]
     user.addThread_all(thread.setFlag(), thread.numReplies, thread.numFlags, thread.views)
     sesh.addUser(user)
     print(user.dump())
