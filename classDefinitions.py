@@ -21,10 +21,10 @@ class Session:
 	def addUser(self, user):
 		self.user_manifest.update({user.name: [user.calcValue(), user]})
 	def addThread(self, thread):
-		if(threadLib.get(thread.user, default=False)):
-			threadLib.update({thread.user: [thread]})
+		if(self.threadLib.get(thread.user, default=False)):
+			self.threadLib.update({thread.user: [thread]})
 		else:
-			threadLib.update({thread.user: threadLib[thread.user].append(thread)})
+			self.threadLib.update({thread.user: threadLib[thread.user].append(thread)})
 	def dumpManifest(self):
 		list = []
 		for key,value in self.user_manifest.items():
@@ -39,7 +39,7 @@ class Session:
 			i += 1
 		return self.topUsers
 	def getTopForUser(self, user):
-		threads = threadLib[user]
+		threads = self.threadLib[user]
 		flagged_threads = filter(lambda threads: threads.setFlag(), threads)
 		flagged_threads.sort(key = lambda flagged_threads: (flagged_threads.views + flagged_threads.numReplies), reverse=True)
 		i = 0
