@@ -149,7 +149,7 @@ def writeTopTen(sesh):
 
 def writeWebStats(sesh):
     stats = sesh.siteStats()
-    g.writeData(sesh.gsheet_creds, sesh.gsheet, sesh.site_sheet, stats, overwrite=True)
+    g.writeData(sesh.gsheet_creds, sesh.gsheet, sesh.site_sheet, [stats], overwrite=True)
 
 def writeToLog(string):
     with open("log.txt", "a") as f:
