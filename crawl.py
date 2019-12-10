@@ -8,6 +8,7 @@ import os
 import sys
 
 # My Libraries
+import selenium
 import webcrawler_api as web
 import gsheet_api as g
 import classDefinitions as c
@@ -30,17 +31,17 @@ def main():
         sesh.driver.quit()
     except Exception as e:
         writeToLog("User Manifest:\n")
-        writeToLog(sesh.user_manifest)
+        writeToLog(str(sesh.user_manifest))
         writeToLog("***************************************\n")
         writeToLog("Thread Library:\n")
-        writeToLog(sesh.threadLib)
+        writeToLog(str(sesh.threadLib))
         writeToLog("***************************************\n")
         writeToLog("Top Users:\n")
-        writeToLog(sesh.topUsers)
+        writeToLog(str(sesh.topUsers))
         writeToLog("***************************************\n")
         writeToLog("ERROR:\n")
-        writeToLog(type(e))
-        writeToLog(e)
+        writeToLog(str(type(e)))
+        writeToLog(str(e))
         sesh.driver.quit()
 
 
@@ -52,9 +53,8 @@ def startCrawl(sesh, end=1000):
     writeToLog("**************************************************\n")
     writeToLog("Page number: "+str(page_num))
     writeToLog("**************************************************\n")
-    current_page = market_url
+    current_page = market_url+"1"
     thread = web.stripThread(sesh.driver, current_page, i)
-    next_flag = False
     try:
         while(j < end):
             if(thread):
@@ -66,10 +66,10 @@ def startCrawl(sesh, end=1000):
                 page_num += 1
                 writeToLog("**************************************************\n")
                 writeToLog("Page number: "+str(page_num))
-                writeToLog("**************************************************\n")
-                web.nextPage(sesh.driver,next_flag)
-                next_flag=True
+                web.nextPage(sesh.driver, str(page_num))
                 current_page = sesh.driver.current_url
+                writeToLog(current_page)
+                writeToLog("**************************************************\n")
                 i = 3
                 j += 1
             writeToLog("Stripping Thread Number "+str(j)+"...")

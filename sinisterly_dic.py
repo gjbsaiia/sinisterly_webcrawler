@@ -6,7 +6,7 @@
 # github: https://github.com/gjbsaiia
 
 login_url = "https://sinister.ly/User-login"
-market_url = "https://sinister.ly/Forum-Regular-Sales"
+market_url = "https://sinister.ly/Forum-Regular-Sales?page="
 
 # Here we have to map each xpath to a specific attribute we want to track
 xpathDic = {
@@ -30,6 +30,5 @@ xpathDic = {
 "th_time2": ']/td[7]/span/span',
 "th_content": '/html/body/div[3]/div[2]/div[5]/div[1]/div[2]/div[2]',
 "next_fp": '/html/body/div[3]/div[2]/div[5]/div/a[6]',
-"next_rest": '/html/body/div[3]/div[2]/div[5]/div/a[7]'
-
+"next_rest": '/html/body/div[3]/div[2]/div[5]/div/a[7]',
 }
