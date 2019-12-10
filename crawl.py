@@ -23,9 +23,10 @@ def main():
         populateFlags(sesh)
         populateManifest(sesh)
         web.login(sesh.driver,'admin_config.txt')
-        startCrawl(sesh)
+        startCrawl(sesh, end=5)
         writeTopTen(sesh)
         updateManifest(sesh)
+        writeWebStats(sesh)
         writeToLog("**************************************************\n")
         writeToLog("Finished Updating GSheet")
         sesh.driver.quit()
@@ -61,6 +62,7 @@ def startCrawl(sesh, end=1000):
             if(thread):
                 thread.setNumFlags(checkContent(sesh, thread))
                 addThread(sesh, thread)
+                sesh.threadCount += 1
                 i += 1
                 j += 1
             else:
@@ -108,14 +110,19 @@ def checkContent(sesh, thread):
     flags = 0
     for each in sesh.flags:
         if each in thread.content:
+            sesh.updateFlagCount(each)
             flags += 1
         if each in thread.threadName:
+            sesh.updateFlagCount(each)
             flags += 1
+    if(flags):
+        sesh.flaggedThreads += 1
     return flags
 
 def addThread(sesh, thread):
     sesh.addThread(thread)
     if(checkNewUser(sesh, thread.user)):
+        sesh.numUsers += 1
         user = c.User(name= thread.user)
     else:
         user = sesh.user_manifest[thread.user][1]
@@ -139,6 +146,10 @@ def writeTopTen(sesh):
             entry.append(each)
         topten.append(entry)
     g.writeData(sesh.gsheet_creds, sesh.gsheet, sesh.top_sheet, topten, overwrite=True)
+
+def writeWebStats(sesh):
+    stats = sesh.siteStats()
+    g.writeData(sesh.gsheet_creds, sesh.gsheet, sesh.site_sheet, stats, overwrite=True)
 
 def writeToLog(string):
     with open("log.txt", "a") as f:

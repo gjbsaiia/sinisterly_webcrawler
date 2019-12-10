@@ -15,6 +15,11 @@ class Session:
 		self.top_sheet = "Top Ten"
 		self.market_sheet= "Market"
 		self.flag_sheet = "Flag Words"
+		self.site_sheet = "Website Stats"
+		self.threadCount = 0
+		self.flaggedThreads = 0
+		self.flagCount = {}
+		self.numUsers = 0
 		self.flags = []
 		self.topUsers = []
 		self.threadLib = {}
@@ -58,6 +63,18 @@ class Session:
 		else:
 			print("ERROR!!! Somehow user was not recorded: "+user)
 			raise Exception(user)
+	def updateFlagCount(self, flag):
+		count = self.flagCount.get(flag, False)
+		if(count):
+			count += 1
+		else:
+			count = 1
+		self.flagCount.update({flag: count})
+	def siteStats(self):
+		percentFlagged = (float(self.flaggedThreads) / float(self.threadCount))
+		sorted_flags = sorted(self.flagCount.items(), key=lambda kv: kv[1], reverse=True)
+		return [percentFlagged, sorted_flags[0][0], self.numUsers]
+
 
 class User: # object the encloses all your data
 	def __init__(self, name, threads=0, flagged=0, replies=0, views=0, flags=0):
@@ -104,7 +121,7 @@ class User: # object the encloses all your data
 		return self.percentFlagged
 	def calcCommInter(self):
 		if(self.views):
-			self.comm_inter = float(self.replyCount)*( float(self.replyCount) / float(self.views) )
+			self.comm_inter = float(self.views)*( float(self.replyCount) / float(self.views) )
 		else:
 			self.comm_inter = 0.0
 		return self.comm_inter
