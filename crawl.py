@@ -52,6 +52,7 @@ def startCrawl(sesh, end=1000):
     writeToLog('Starting to Crawl!')
     writeToLog("**************************************************\n")
     writeToLog("Page number: "+str(page_num))
+    writeTOLog(str(sesh.driver.current_url))
     writeToLog("**************************************************\n")
     current_page = market_url+"1"
     thread = web.stripThread(sesh.driver, current_page, i)
