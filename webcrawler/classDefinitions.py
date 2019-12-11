@@ -19,10 +19,14 @@ class Session:
 		self.threadCount = 0
 		self.flaggedThreads = 0
 		self.flagCount = {}
-		self.numUsers = 0
+		self.numVendors = 0
+		self.numDirtyVendors = 0
 		self.flags = []
 		self.topUsers = []
 		self.threadLib = {}
+		self.startTime = 0
+		self.stopTime = 0
+		self.crawlDuration = 0
 	def addUser(self, user):
 		self.user_manifest.update({user.name: [user.calcValue(), user]})
 	def addThread(self, thread):
@@ -73,9 +77,11 @@ class Session:
 			count = 1
 		self.flagCount.update({flag: count})
 	def siteStats(self):
+		minutes = self.crawlDuration.total_seconds()/60.0
+		threadsPerMin = self.threadCount / minutes
 		percentFlagged = (float(self.flaggedThreads) / float(self.threadCount))
 		sorted_flags = sorted(self.flagCount.items(), key=lambda kv: kv[1], reverse=True)
-		return [percentFlagged, sorted_flags[0][0], self.numUsers]
+		return [percentFlagged, sorted_flags[0][0], self.numVendors, self.numDirtyVendors, self.threadCount, str(self.crawlDuration), threadsPerMin]
 
 
 class User: # object the encloses all your data
@@ -128,7 +134,7 @@ class User: # object the encloses all your data
 			self.comm_inter = 0.0
 		return self.comm_inter
 	def calcValue(self):
-		self.user_value = (self.calcBuzz() * self.calcPercentFlagged())*(self.threadCount) + (self.calcCommInter())
+		self.user_value = (self.calcBuzz() * self.flaggedThread) + (self.calcCommInter() * self.calcPercentFlagged())
 		return self.user_value
 	def dump(self):
 		self.calcValue()

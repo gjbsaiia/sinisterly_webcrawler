@@ -9,14 +9,15 @@ import sys
 
 # My Libraries
 import selenium
+from datetime import datetime as dt
 import webcrawler_api as web
 import gsheet_api as g
 import classDefinitions as c
 from sinisterly_dic import market_url
 
 def main():
-    freshLog()
     sesh = web.start()
+    freshLog(sesh)
     try:
         creds = g.configCreds("creds.json")
         sesh.gsheet_creds = creds
@@ -82,8 +83,10 @@ def startCrawl(sesh, end=1000):
         writeToLog(str(type(e)))
         writeToLog(str(e))
         end = j
+    sesh.stopTime = dt.now()
+    sesh.crawlDuration = sesh.stopTime - sesh.startTime
     writeToLog("**************************************************\n")
-    writeToLog("Finished Crawling. Stripped "+str(end)+" values.")
+    writeToLog("Finished Crawling. Stripped "+str(end)+" values. Took "+str(sesh.crawlDuration)+".\n")
 
 def populateFlags(sesh):
     list = g.readSheet(sesh.gsheet_creds, sesh.gsheet, sesh.flag_sheet, 2)
@@ -122,7 +125,9 @@ def checkContent(sesh, thread):
 def addThread(sesh, thread):
     sesh.addThread(thread)
     if(checkNewUser(sesh, thread.user)):
-        sesh.numUsers += 1
+        sesh.numVendors += 1
+        if(thread.numFlags):
+            sesh.numDirtyVendors += 1
         user = c.User(name= thread.user)
     else:
         user = sesh.user_manifest[thread.user][1]
@@ -152,15 +157,19 @@ def writeWebStats(sesh):
     g.writeData(sesh.gsheet_creds, sesh.gsheet, sesh.site_sheet, [stats], overwrite=True)
 
 def writeToLog(string):
+    timestamp = dt.now().strftime("%d/%m/%Y %H:%M:%S")
     with open("log.txt", "a") as f:
-        f.write(string)
+        f.write("["+timestamp+":]  "+string)
         f.write("\n")
     f.close()
     print(string)
 
-def freshLog():
+def freshLog(sesh):
+    sesh.startTime = dt.now()
     with open("log.txt", "w+") as f:
         f.write("Webcrawler Log:\n")
+        f.write("\n")
+        f.write("Starting at "+sesh.startTime.strftime("%d/%m/%Y %H:%M:%S")+"...\n")
         f.write("\n")
         f.write("**************************************************\n")
         f.write("\n")

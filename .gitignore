@@ -1,4 +1,5 @@
-*.json
+/webcrawler/*.json
+/webcrawler/*.txt
 *.txt
 *.pem
 /__pycache__/*
