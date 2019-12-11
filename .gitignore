@@ -1,6 +1,6 @@
 /webcrawler/*.json
 /webcrawler/*.txt
-*.txt
+ec2_instance.txt
 *.pem
 /__pycache__/*
 *.pyc

@@ -24,7 +24,7 @@ def main():
         populateFlags(sesh)
         populateManifest(sesh)
         web.login(sesh.driver,'admin_config.txt')
-        startCrawl(sesh, end=10000)
+        startCrawl(sesh, end=236)
         writeTopTen(sesh)
         updateManifest(sesh)
         writeWebStats(sesh)
@@ -47,7 +47,7 @@ def main():
         sesh.driver.quit()
 
 
-def startCrawl(sesh, end=1000):
+def startCrawl(sesh, end=200):
     j = 0
     i = 6 # hardcoded because thread indexing starts here
     page_num = 1
@@ -59,7 +59,7 @@ def startCrawl(sesh, end=1000):
     current_page = market_url+"1"
     thread = web.stripThread(sesh.driver, current_page, i)
     try:
-        while(j < end):
+        while(page_num < end):
             if(thread):
                 thread.setNumFlags(checkContent(sesh, thread))
                 addThread(sesh, thread)
