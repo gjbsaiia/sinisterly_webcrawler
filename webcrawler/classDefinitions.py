@@ -81,7 +81,7 @@ class Session:
 		threadsPerMin = self.threadCount / minutes
 		percentFlagged = (float(self.flaggedThreads) / float(self.threadCount))
 		sorted_flags = sorted(self.flagCount.items(), key=lambda kv: kv[1], reverse=True)
-		return [percentFlagged, sorted_flags[0][0], self.numVendors, self.numDirtyVendors, self.threadCount, str(self.crawlDuration), threadsPerMin]
+		return [str(percentFlagged*100)+"%", sorted_flags[0][0], self.numVendors, self.numDirtyVendors, self.threadCount, self.flaggedThreads, str(self.crawlDuration), threadsPerMin]
 
 
 class User: # object the encloses all your data

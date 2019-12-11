@@ -158,7 +158,7 @@ def writeWebStats(sesh):
 
 def writeToLog(string):
     timestamp = dt.now().strftime("%d/%m/%Y %H:%M:%S")
-    msg = "["+timestamp+":]  "+string
+    msg = "["+timestamp+"]  "+string
     with open("log.txt", "a") as f:
         f.write(msg)
         f.write("\n")
