@@ -157,13 +157,14 @@ def writeWebStats(sesh):
     g.writeData(sesh.gsheet_creds, sesh.gsheet, sesh.site_sheet, [stats], overwrite=True)
 
 def writeToLog(string):
-    timestamp = dt.now().strftime("%d/%m/%Y %H:%M:%S")
-    msg = "["+timestamp+"]  "+string
+    if "*" not in string:
+        timestamp = dt.now().strftime("%d/%m/%Y %H:%M:%S")
+        string = "["+timestamp+"]  "+string
     with open("log.txt", "a") as f:
-        f.write(msg)
+        f.write(string)
         f.write("\n")
     f.close()
-    print(msg)
+    print(string)
 
 def freshLog(sesh):
     sesh.startTime = dt.now()
