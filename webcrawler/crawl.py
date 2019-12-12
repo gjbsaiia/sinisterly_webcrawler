@@ -25,14 +25,14 @@ def main():
         populateManifest(sesh)
         web.login(sesh.driver,'admin_config.txt')
         startCrawl(sesh, end=2)#237)
-        writeTopTen(sesh)
+        writeTopTen(sesh, "4/4")
         updateManifest(sesh)
-        writeWebStats(sesh)
+        writeWebStats(sesh, "4/4")
         writeToLog("**************************************************\n")
         writeToLog("Finished Updating GSheet")
         sesh.driver.quit()
     except Exception as e:
-        writeWebStats(sesh)
+        writeWebStats(sesh, "ERROR")
         updateManifest(sesh)
         writeToLog("User Manifest:\n")
         writeToLog(str(sesh.user_manifest))
@@ -76,7 +76,7 @@ def startCrawl(sesh, end=200):
                     prog = str(4-quarters)+"/4"
                     sesh.stopTime = dt.now()
                     sesh.crawlDuration = sesh.stopTime - sesh.startTime
-                    if(4-quarters):
+                    if((4-quarters) == 0):
                         prog="1/4"
                     writeTopTen(sesh, prog)
                     writeWebStats(sesh, prog)
