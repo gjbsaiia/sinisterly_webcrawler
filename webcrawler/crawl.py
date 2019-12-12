@@ -24,7 +24,7 @@ def main():
         populateFlags(sesh)
         populateManifest(sesh)
         web.login(sesh.driver,'admin_config.txt')
-        startCrawl(sesh, end=236)
+        startCrawl(sesh, end=10)#237)
         writeTopTen(sesh)
         updateManifest(sesh)
         writeWebStats(sesh)
@@ -44,12 +44,15 @@ def main():
         writeToLog("ERROR:\n")
         writeToLog(str(type(e)))
         writeToLog(str(e))
+        updateManifest(sesh)
+        writeWebStats(sesh)
         sesh.driver.quit()
 
 
 def startCrawl(sesh, end=200):
     j = 0
     i = 6 # hardcoded because thread indexing starts here
+    quarters = 4
     page_num = 1
     writeToLog('Starting to Crawl!')
     writeToLog("**************************************************\n")
@@ -78,6 +81,10 @@ def startCrawl(sesh, end=200):
                 j += 1
             writeToLog("Stripping Thread Number "+str(j)+"...")
             thread = web.stripThread(sesh.driver, current_page, i)
+            if(page_num * quarters > end):
+                writeTopTen(sesh)
+                writeWebStats(sesh)
+                quarters -= 1
     except selenium.common.exceptions.NoSuchElementException:
         writeToLog("ERROR:\n")
         writeToLog(str(type(e)))
@@ -149,11 +156,14 @@ def writeTopTen(sesh):
         topthreads = sesh.getTopForUser(user[0])
         for each in topthreads:
             entry.append(each)
+        entry.append("")
         topten.append(entry)
+    topten.append(["","","","","","","", dt.now().strftime("%d/%m/%Y %H:%M:%S")])
     g.writeData(sesh.gsheet_creds, sesh.gsheet, sesh.top_sheet, topten, overwrite=True)
 
 def writeWebStats(sesh):
     stats = sesh.siteStats()
+    stats.append(dt.now().strftime("%d/%m/%Y %H:%M:%S"))
     g.writeData(sesh.gsheet_creds, sesh.gsheet, sesh.site_sheet, [stats], overwrite=True)
 
 def writeToLog(string):

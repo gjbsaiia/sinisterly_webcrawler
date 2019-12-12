@@ -43,8 +43,9 @@ class Session:
 			list.append(value[1].dump())
 		return list
 	def buildTopUsers(self):
+		self.topUsers = []
 		values = list(self.user_manifest.values())
-		values.sort(key = lambda values: values[0], reverse=True)
+		values.sort(key = lambda scores: scores[0], reverse=True)
 		i = 0
 		while( i < 10 ):
 			if(i >= len(values)):
