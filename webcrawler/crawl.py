@@ -72,6 +72,12 @@ def startCrawl(sesh, end=200):
                 j += 1
             else:
                 page_num += 1
+                if(page_num * quarters > end):
+                    sesh.stopTime = dt.now()
+                    sesh.crawlDuration = sesh.stopTime - sesh.startTime
+                    writeTopTen(sesh)
+                    writeWebStats(sesh)
+                    quarters -= 1
                 writeToLog("**************************************************\n")
                 writeToLog("Page number: "+str(page_num))
                 web.nextPage(sesh.driver, str(page_num))
@@ -82,11 +88,6 @@ def startCrawl(sesh, end=200):
                 j += 1
             writeToLog("Stripping Thread Number "+str(j)+"...")
             thread = web.stripThread(sesh.driver, current_page, i)
-            if(page_num * quarters > end):
-                sesh.stopTime = dt.now()
-                writeTopTen(sesh)
-                writeWebStats(sesh)
-                quarters -= 1
     except selenium.common.exceptions.NoSuchElementException:
         writeToLog("ERROR:\n")
         writeToLog(str(type(e)))
