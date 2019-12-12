@@ -73,10 +73,13 @@ def startCrawl(sesh, end=200):
             else:
                 page_num += 1
                 if(page_num * quarters > end):
+                    prog = str(4-quarters)+"/4"
                     sesh.stopTime = dt.now()
                     sesh.crawlDuration = sesh.stopTime - sesh.startTime
-                    writeTopTen(sesh)
-                    writeWebStats(sesh)
+                    if(4-quarters):
+                        prog="1/4"
+                    writeTopTen(sesh, prog)
+                    writeWebStats(sesh, prog)
                     quarters -= 1
                 writeToLog("**************************************************\n")
                 writeToLog("Page number: "+str(page_num))
@@ -151,7 +154,7 @@ def updateManifest(sesh):
     g.writeData(sesh.gsheet_creds, sesh.gsheet, sesh.user_sheet, manifest, overwrite=True)
     return True
 
-def writeTopTen(sesh):
+def writeTopTen(sesh, prog):
     users = sesh.buildTopUsers()
     topten = []
     for user in users:
@@ -161,12 +164,12 @@ def writeTopTen(sesh):
             entry.append(each)
         entry.append("")
         topten.append(entry)
-    topten.append(["","","","","","","", dt.now().strftime("%d/%m/%Y %H:%M:%S")])
+    topten.append(["","","","","","","", prog)])
     g.writeData(sesh.gsheet_creds, sesh.gsheet, sesh.top_sheet, topten, overwrite=True)
 
-def writeWebStats(sesh):
+def writeWebStats(sesh, prog):
     stats = sesh.siteStats()
-    stats.append(dt.now().strftime("%d/%m/%Y %H:%M:%S"))
+    stats.append(prog)
     g.writeData(sesh.gsheet_creds, sesh.gsheet, sesh.site_sheet, [stats], overwrite=True)
 
 def writeToLog(string):
