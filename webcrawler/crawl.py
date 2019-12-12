@@ -83,6 +83,7 @@ def startCrawl(sesh, end=200):
             writeToLog("Stripping Thread Number "+str(j)+"...")
             thread = web.stripThread(sesh.driver, current_page, i)
             if(page_num * quarters > end):
+                sesh.stopTime = dt.now()
                 writeTopTen(sesh)
                 writeWebStats(sesh)
                 quarters -= 1
