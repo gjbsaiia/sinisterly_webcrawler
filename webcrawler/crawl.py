@@ -32,8 +32,8 @@ def main():
         writeToLog("Finished Updating GSheet")
         sesh.driver.quit()
     except Exception as e:
-        updateManifest(sesh)
         writeWebStats(sesh)
+        updateManifest(sesh)
         writeToLog("User Manifest:\n")
         writeToLog(str(sesh.user_manifest))
         writeToLog("***************************************\n")
