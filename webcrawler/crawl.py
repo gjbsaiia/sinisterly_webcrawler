@@ -42,8 +42,9 @@ def main():
         writeToLog(str(sesh.topUsers))
         writeToLog("***************************************\n")
         writeToLog("ERROR:\n")
-        writeToLog(str(type(e)))
-        writeToLog(str(e))
+        exc_type, exc_obj, exc_tb = sys.exc_info()
+        fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
+        print(exc_type, fname, exc_tb.tb_lineno)
         updateManifest(sesh)
         writeWebStats(sesh)
         sesh.driver.quit()
