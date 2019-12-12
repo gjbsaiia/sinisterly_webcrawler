@@ -24,7 +24,7 @@ def main():
         populateFlags(sesh)
         populateManifest(sesh)
         web.login(sesh.driver,'admin_config.txt')
-        startCrawl(sesh, end=2)#237)
+        startCrawl(sesh, end=235)
         writeTopTen(sesh, "4/4")
         updateManifest(sesh)
         writeWebStats(sesh, "4/4")
