@@ -164,7 +164,7 @@ def writeTopTen(sesh, prog):
             entry.append(each)
         entry.append("")
         topten.append(entry)
-    topten.append(["","","","","","","", prog)])
+    topten.append(["","","","","","","", prog])
     g.writeData(sesh.gsheet_creds, sesh.gsheet, sesh.top_sheet, topten, overwrite=True)
 
 def writeWebStats(sesh, prog):
