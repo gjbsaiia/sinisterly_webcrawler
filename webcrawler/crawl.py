@@ -24,7 +24,7 @@ def main():
         populateFlags(sesh)
         populateManifest(sesh)
         web.login(sesh.driver,'admin_config.txt')
-        startCrawl(sesh, end=1)#237)
+        startCrawl(sesh, end=2)#237)
         writeTopTen(sesh)
         updateManifest(sesh)
         writeWebStats(sesh)
@@ -32,6 +32,8 @@ def main():
         writeToLog("Finished Updating GSheet")
         sesh.driver.quit()
     except Exception as e:
+        updateManifest(sesh)
+        writeWebStats(sesh)
         writeToLog("User Manifest:\n")
         writeToLog(str(sesh.user_manifest))
         writeToLog("***************************************\n")
@@ -44,9 +46,7 @@ def main():
         writeToLog("ERROR:\n")
         exc_type, exc_obj, exc_tb = sys.exc_info()
         fname = os.path.split(exc_tb.tb_frame.f_code.co_filename)[1]
-        print(exc_type, fname, exc_tb.tb_lineno)
-        updateManifest(sesh)
-        writeWebStats(sesh)
+        writeToLog(exc_type, fname, exc_tb.tb_lineno)
         sesh.driver.quit()
 
 
