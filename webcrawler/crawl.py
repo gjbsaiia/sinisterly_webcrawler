@@ -24,7 +24,7 @@ def main():
         populateFlags(sesh)
         populateManifest(sesh)
         web.login(sesh.driver,'admin_config.txt')
-        startCrawl(sesh, end=2)#237)
+        startCrawl(sesh, end=1)#237)
         writeTopTen(sesh)
         updateManifest(sesh)
         writeWebStats(sesh)
@@ -62,7 +62,6 @@ def startCrawl(sesh, end=200):
     writeToLog("**************************************************\n")
     current_page = market_url+"1"
     thread = web.stripThread(sesh.driver, current_page, i)
-    print error
     try:
         while(page_num < end):
             if(thread):
