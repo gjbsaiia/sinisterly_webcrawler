@@ -62,6 +62,7 @@ def startCrawl(sesh, end=200):
     writeToLog("**************************************************\n")
     current_page = market_url+"1"
     thread = web.stripThread(sesh.driver, current_page, i)
+    print error
     try:
         while(page_num < end):
             if(thread):
